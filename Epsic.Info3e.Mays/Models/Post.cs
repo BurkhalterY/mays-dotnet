@@ -17,6 +17,6 @@ namespace Epsic.Info3e.Mays.Models
         public IdentityUser Author { get; set; }
         public string Content { get; set; }
         public string FilePath { get; set; }
-        public bool IsNSFW { get; set; }
+        public bool IsSpoiler { get; set; }
     }
 }
