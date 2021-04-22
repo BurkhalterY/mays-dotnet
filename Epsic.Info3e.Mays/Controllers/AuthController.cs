@@ -34,6 +34,8 @@ namespace Epsic.Info3e.Mays.Controllers
 
             var isCreated = await _userManager.CreateAsync(newUser, user.Password);
 
+            await _userManager.AddToRoleAsync(newUser, "user");
+
             if (isCreated.Succeeded)
                 return Ok(newUser);
 
@@ -98,7 +100,7 @@ namespace Epsic.Info3e.Mays.Controllers
                     new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 }),
                 Claims = new Dictionary<string, object>(),
-                Expires = DateTime.UtcNow.AddHours(6),
+                Expires = DateTime.UtcNow.AddDays(1),
                 // ici, nous ajoutons l'information sur l'algorithme de cryptage qui sera utilisé pour décrypter notre token.
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
             };

@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Epsic.Info3e.Mays.DbContext;
 using Epsic.Info3e.Mays.Models;
+using Microsoft.AspNetCore.Authorization;
+using System;
+using Microsoft.AspNetCore.Identity;
 
 namespace Epsic.Info3e.Mays.Controllers
 {
@@ -15,10 +16,12 @@ namespace Epsic.Info3e.Mays.Controllers
     public class PostsController : ControllerBase
     {
         private readonly MaysDbContext _context;
+        private readonly IAuthorizationService _authorizationService;
 
-        public PostsController(MaysDbContext context)
+        public PostsController(MaysDbContext context, IAuthorizationService authorizationService)
         {
             _context = context;
+            _authorizationService = authorizationService;
         }
 
         // GET: api/Posts
@@ -76,8 +79,10 @@ namespace Epsic.Info3e.Mays.Controllers
         // POST: api/Posts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = "user,premium,admin")]
         public async Task<ActionResult<Post>> PostPost(Post post)
         {
+            post.Date = DateTime.Now;
             _context.Posts.Add(post);
             await _context.SaveChangesAsync();
 
@@ -94,8 +99,18 @@ namespace Epsic.Info3e.Mays.Controllers
                 return NotFound();
             }
 
-            _context.Posts.Remove(post);
-            await _context.SaveChangesAsync();
+            var authorizationResultAdmin = await _authorizationService.AuthorizeAsync(User, post, "Admin");
+            var authorizationResultSameUser = await _authorizationService.AuthorizeAsync(User, post, "SameUser");
+
+            if (authorizationResultAdmin.Succeeded || authorizationResultSameUser.Succeeded)
+            {
+                _context.Posts.Remove(post);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                return Forbid();
+            }
 
             return NoContent();
         }

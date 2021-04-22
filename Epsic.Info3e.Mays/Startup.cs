@@ -1,4 +1,5 @@
 using System.Text;
+using Epsic.Info3e.Mays.Authorization;
 using Epsic.Info3e.Mays.Config;
 using Epsic.Info3e.Mays.DbContext;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -60,6 +61,12 @@ namespace Epsic.Info3e.Mays
                     RequireExpirationTime = true,
                     ValidateLifetime = true
                 };
+            });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("SameUser", policy => policy.Requirements.Add(new SameUserRequirement()));
+                options.AddPolicy("Premium", policy => policy.Requirements.Add(new SameUserRequirement()));
+                options.AddPolicy("Admin", policy => policy.Requirements.Add(new SameUserRequirement()));
             });
 
             services.AddCors(options =>
