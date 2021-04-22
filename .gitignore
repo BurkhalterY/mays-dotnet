@@ -9,6 +9,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+Epsic.Info3e.Mays/wwwroot/Assets
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

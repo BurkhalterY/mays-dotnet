@@ -81,6 +81,10 @@ namespace Epsic.Info3e.Mays
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Epsic.Info3e.Mays v1"));
             }
 
+            app.UseDefaultFiles();
+
+            app.UseStaticFiles();
+
             app.UseCors("CorsPolicy");
 
             app.UseHttpsRedirection();
