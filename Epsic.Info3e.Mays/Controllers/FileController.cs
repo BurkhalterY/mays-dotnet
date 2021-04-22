@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Epsic.Info3e.Mays.Controllers
 {
@@ -14,10 +15,12 @@ namespace Epsic.Info3e.Mays.Controllers
     public class FileController : ControllerBase
     {
         private readonly IWebHostEnvironment _environment;
+        private readonly ILogger<FileController> _logger;
 
-        public FileController(IWebHostEnvironment environment) : base()
+        public FileController(IWebHostEnvironment environment, ILogger<FileController> logger) : base()
         {
             _environment = environment;
+            _logger = logger;
         }
 
         [HttpPost("upload")]
@@ -68,7 +71,7 @@ namespace Epsic.Info3e.Mays.Controllers
             }
             catch (Exception e)
             {
-                //_logger.LogError(e);
+                _logger.LogError(e, e.Message);
                 return false;
             }
         }
