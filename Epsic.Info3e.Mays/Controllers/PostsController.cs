@@ -94,6 +94,17 @@ namespace Epsic.Info3e.Mays.Controllers
         [Authorize(Roles = "user,premium,admin")]
         public async Task<ActionResult<Post>> PostPost(Post post)
         {
+            if (post.File != null)
+            {
+                var filePath = await SaveFileAsync(post.File);
+                if (filePath == null)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+
+                post.FilePath = filePath;
+            }
+
             post.Date = DateTime.Now;
             _context.Posts.Add(post);
             await _context.SaveChangesAsync();

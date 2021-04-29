@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,6 +17,8 @@ namespace Epsic.Info3e.Mays.Models
         [Required]
         public IdentityUser Author { get; set; }
         public string Content { get; set; }
+        [NotMapped]
+        public IFormFile File { get; set; }
         public string FilePath { get; set; }
         public bool IsSpoiler { get; set; }
     }
