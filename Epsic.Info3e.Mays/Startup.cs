@@ -64,7 +64,12 @@ namespace Epsic.Info3e.Mays
 
             services.Configure<JwtConfig>(Configuration.GetSection("JwtConfig"));
 
-            services.AddIdentity<IdentityUser, IdentityRole>(options => { })
+            services.AddIdentity<IdentityUser, IdentityRole>(options => {
+                options.Password.RequiredLength = 8;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireDigit = true;
+            })
                 .AddEntityFrameworkStores<MaysDbContext>();
 
             services.AddAuthentication(options =>
