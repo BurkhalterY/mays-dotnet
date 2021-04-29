@@ -3,14 +3,16 @@ using System;
 using Epsic.Info3e.Mays.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Epsic.Info3e.Mays.Migrations
 {
     [DbContext(typeof(MaysDbContext))]
-    partial class MaysDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210429091129_FixId")]
+    partial class FixId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

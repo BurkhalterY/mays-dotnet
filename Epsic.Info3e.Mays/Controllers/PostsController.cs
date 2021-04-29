@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Identity;
 
 namespace Epsic.Info3e.Mays.Controllers
 {
@@ -23,30 +24,51 @@ namespace Epsic.Info3e.Mays.Controllers
         private readonly IAuthorizationService _authorizationService;
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger<PostsController> _logger;
+        private readonly UserManager<IdentityUser> _userManager;
 
         public PostsController(MaysDbContext context,
                                IAuthorizationService authorizationService,
                                IWebHostEnvironment environment,
-                               ILogger<PostsController> logger)
+                               ILogger<PostsController> logger,
+                               UserManager<IdentityUser> userManager)
         {
             _context = context;
             _authorizationService = authorizationService;
             _environment = environment;
             _logger = logger;
+            _userManager = userManager;
         }
 
         // GET: api/Posts
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Post>>> GetPosts()
+        public async Task<ActionResult<IEnumerable<PostDto>>> GetPosts()
         {
-            return await _context.Posts.ToListAsync();
+            return await _context.Posts.Select(post => new PostDto()
+            {
+                Id = post.Id,
+                Title = post.Title,
+                Date = post.Date,
+                Author = new UserDto() { UserName = post.Author.UserName },
+                Content = post.Content,
+                FilePath = post.FilePath,
+                IsSpoiler = post.IsSpoiler
+            }).ToListAsync();
         }
 
         // GET: api/Posts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Post>> GetPost(int id)
+        public async Task<ActionResult<PostDto>> GetPost(string id)
         {
-            var post = await _context.Posts.FindAsync(id);
+            var post = await _context.Posts.Select(post => new PostDto()
+            {
+                Id = post.Id,
+                Title = post.Title,
+                Date = post.Date,
+                Author = new UserDto() { UserName = post.Author.UserName },
+                Content = post.Content,
+                FilePath = post.FilePath,
+                IsSpoiler = post.IsSpoiler
+            }).FirstOrDefaultAsync(x => x.Id == id);
 
             if (post == null)
             {
@@ -59,7 +81,7 @@ namespace Epsic.Info3e.Mays.Controllers
         // PUT: api/Posts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPost(int id, Post post)
+        public async Task<IActionResult> PutPost(string id, Post post)
         {
             if (id != post.Id)
             {
@@ -91,7 +113,7 @@ namespace Epsic.Info3e.Mays.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize(Roles = "user,premium,admin")]
-        public async Task<ActionResult<Post>> PostPost(Post post)
+        public async Task<ActionResult<PostDto>> PostPost(Post post)
         {
             if (post.FileContent != null)
             {
@@ -104,6 +126,7 @@ namespace Epsic.Info3e.Mays.Controllers
                 post.FilePath = filePath;
             }
 
+            post.Author = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(x => x.Type == "Id").Value);
             post.Date = DateTime.Now;
             _context.Posts.Add(post);
             await _context.SaveChangesAsync();
@@ -113,7 +136,7 @@ namespace Epsic.Info3e.Mays.Controllers
 
         // DELETE: api/Posts/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePost(int id)
+        public async Task<IActionResult> DeletePost(string id)
         {
             var post = await _context.Posts.FindAsync(id);
             if (post == null)
@@ -137,7 +160,7 @@ namespace Epsic.Info3e.Mays.Controllers
             return NoContent();
         }
 
-        private bool PostExists(int id)
+        private bool PostExists(string id)
         {
             return _context.Posts.Any(e => e.Id == id);
         }

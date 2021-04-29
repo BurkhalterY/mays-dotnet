@@ -1,4 +1,4 @@
-using Epsic.Info3e.Mays.Models;
+﻿using Epsic.Info3e.Mays.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,5 +12,7 @@ namespace Epsic.Info3e.Mays.DbContext
         {
 
         }
+
+        public DbSet<Epsic.Info3e.Mays.Models.Like> Like { get; set; }
     }
 }
