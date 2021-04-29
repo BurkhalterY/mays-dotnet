@@ -35,10 +35,11 @@ namespace Epsic.Info3e.Mays.Controllers
 
             var isCreated = await _userManager.CreateAsync(newUser, user.Password);
 
-            await _userManager.AddToRoleAsync(newUser, "user");
-
             if (isCreated.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(newUser, "user");
                 return Ok(newUser);
+            }
 
             return BadRequest(new CreateAccountResponse
             {
