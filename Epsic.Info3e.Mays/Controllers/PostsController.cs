@@ -8,6 +8,11 @@ using Epsic.Info3e.Mays.Models;
 using Microsoft.AspNetCore.Authorization;
 using System;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Epsic.Info3e.Mays.Controllers
 {
@@ -17,11 +22,18 @@ namespace Epsic.Info3e.Mays.Controllers
     {
         private readonly MaysDbContext _context;
         private readonly IAuthorizationService _authorizationService;
+        private readonly IWebHostEnvironment _environment;
+        private readonly ILogger<PostsController> _logger;
 
-        public PostsController(MaysDbContext context, IAuthorizationService authorizationService)
+        public PostsController(MaysDbContext context,
+                               IAuthorizationService authorizationService,
+                               IWebHostEnvironment environment,
+                               ILogger<PostsController> logger)
         {
             _context = context;
             _authorizationService = authorizationService;
+            _environment = environment;
+            _logger = logger;
         }
 
         // GET: api/Posts
@@ -118,6 +130,57 @@ namespace Epsic.Info3e.Mays.Controllers
         private bool PostExists(int id)
         {
             return _context.Posts.Any(e => e.Id == id);
+        }
+
+        /// <summary>
+        /// Saves a file to disc.
+        /// </summary>
+        /// <param name="file">File to save to the disc</param>
+        /// <param name="filename">Name of the file to save</param>
+        /// <returns>True if the file was saved, false otherwise</returns>
+        private async Task<bool> SaveFileAsync(IFormFile file, string filename = null)
+        {
+            try
+            {
+                if (filename != null && filename == Path.GetFileNameWithoutExtension(filename))
+                {
+                    filename += $"{file.FileName.Split('.').Last()}";
+                }
+
+                filename ??= file.FileName;
+
+                var filepath = $"{_environment.WebRootPath}\\Assets\\";
+                if (!Directory.Exists(filepath))
+                {
+                    Directory.CreateDirectory(filepath);
+                }
+
+                var extension = file.FileName.Split('.').Last();
+                filename = Path.GetFileNameWithoutExtension(filename);
+                filename = Regex.Replace(filename, "/[^a-zA-Z0-9]+/g", "-");
+
+                if (System.IO.File.Exists($"{filepath}{filename}.{extension}"))
+                {
+                    var suffix = 0;
+                    while (System.IO.File.Exists($"{filepath}{filename}-{suffix}.{extension}"))
+                    {
+                        suffix++;
+                    }
+
+                    filename += $"-{suffix}";
+                }
+
+                using FileStream fs = System.IO.File.Create($"{filepath}{filename}.{extension}");
+                await file.CopyToAsync(fs);
+                fs.Flush();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return false;
+            }
         }
     }
 }
