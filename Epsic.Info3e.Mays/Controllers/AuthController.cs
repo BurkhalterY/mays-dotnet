@@ -14,6 +14,7 @@ using Epsic.Info3e.Mays.Models;
 
 namespace Epsic.Info3e.Mays.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
