@@ -5,7 +5,7 @@ namespace Epsic.Info3e.Mays.Models
     public class LoginRequest
     {
         [Required]
-        public string Email { get; set; }
+        public string Input { get; set; }
 
         [Required]
         public string Password { get; set; }
