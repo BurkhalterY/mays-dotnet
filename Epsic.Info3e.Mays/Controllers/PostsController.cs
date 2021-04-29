@@ -138,7 +138,7 @@ namespace Epsic.Info3e.Mays.Controllers
         /// <param name="file">File to save to the disc</param>
         /// <param name="filename">Name of the file to save</param>
         /// <returns>True if the file was saved, false otherwise</returns>
-        private async Task<bool> SaveFileAsync(IFormFile file, string filename = null)
+        private async Task<string> SaveFileAsync(IFormFile file, string filename = null)
         {
             try
             {
@@ -170,16 +170,18 @@ namespace Epsic.Info3e.Mays.Controllers
                     filename += $"-{suffix}";
                 }
 
-                using FileStream fs = System.IO.File.Create($"{filepath}{filename}.{extension}");
+                filename += $".{extension}";
+
+                using FileStream fs = System.IO.File.Create($"{filepath}{filename}");
                 await file.CopyToAsync(fs);
                 fs.Flush();
 
-                return true;
+                return filename;
             }
             catch (Exception e)
             {
                 _logger.LogError(e, e.Message);
-                return false;
+                return null;
             }
         }
     }
