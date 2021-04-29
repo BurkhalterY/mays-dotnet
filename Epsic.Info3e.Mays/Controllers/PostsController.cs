@@ -137,7 +137,7 @@ namespace Epsic.Info3e.Mays.Controllers
         /// </summary>
         /// <param name="file">File to save to the disc</param>
         /// <param name="filename">Name of the file to save</param>
-        /// <returns>True if the file was saved, false otherwise</returns>
+        /// <returns>The name of the file if saved, null otherwise</returns>
         private async Task<string> SaveFileAsync(IFormFile file, string filename = null)
         {
             try
