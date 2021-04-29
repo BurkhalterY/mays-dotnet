@@ -99,7 +99,7 @@ namespace Epsic.Info3e.Mays.Controllers
                 return NotFound();
             }
 
-            var authorizationResultAdmin = await _authorizationService.AuthorizeAsync(User, post, "Admin");
+            var authorizationResultAdmin = await _authorizationService.AuthorizeAsync(User, "Admin");
             var authorizationResultSameUser = await _authorizationService.AuthorizeAsync(User, post, "SameUser");
 
             if (authorizationResultAdmin.Succeeded || authorizationResultSameUser.Succeeded)
