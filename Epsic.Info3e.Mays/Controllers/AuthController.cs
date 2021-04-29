@@ -28,7 +28,7 @@ namespace Epsic.Info3e.Mays.Controllers
         }
 
         [HttpPost]
-        [Route("auth/Create")]
+        [Route("Create")]
         public async Task<IActionResult> Create([FromBody] CreateAccountRequest user)
         {
             var newUser = new IdentityUser { Email = user.Email, UserName = user.Email };
@@ -48,7 +48,7 @@ namespace Epsic.Info3e.Mays.Controllers
         }
 
         [HttpPost]
-        [Route("auth/Login")]
+        [Route("Login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest user)
         {
             // Vérifier si l'utilisateur avec le même email existe
