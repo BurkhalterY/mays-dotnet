@@ -7,7 +7,6 @@ using Epsic.Info3e.Mays.DbContext;
 using Epsic.Info3e.Mays.Models;
 using Microsoft.AspNetCore.Authorization;
 using System;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
@@ -94,9 +93,9 @@ namespace Epsic.Info3e.Mays.Controllers
         [Authorize(Roles = "user,premium,admin")]
         public async Task<ActionResult<Post>> PostPost(Post post)
         {
-            if (post.File != null)
+            if (post.FileContent != null)
             {
-                var filePath = await SaveFileAsync(post.File);
+                var filePath = await SaveFileAsync(post.FileContent, post.FileName);
                 if (filePath == null)
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError);
@@ -149,45 +148,43 @@ namespace Epsic.Info3e.Mays.Controllers
         /// <param name="file">File to save to the disc</param>
         /// <param name="filename">Name of the file to save</param>
         /// <returns>The name of the file if saved, null otherwise</returns>
-        private async Task<string> SaveFileAsync(IFormFile file, string filename = null)
+        private async Task<string> SaveFileAsync(byte[] fileContent, string fileName)
         {
             try
             {
-                if (filename != null && filename == Path.GetFileNameWithoutExtension(filename))
+                if (!fileName.Contains("."))
                 {
-                    filename += $"{file.FileName.Split('.').Last()}";
+                    return null;
                 }
 
-                filename ??= file.FileName;
-
-                var filepath = $"{_environment.WebRootPath}\\Assets\\";
-                if (!Directory.Exists(filepath))
+                var filePath = $"{_environment.WebRootPath}\\Assets\\";
+                if (!Directory.Exists(filePath))
                 {
-                    Directory.CreateDirectory(filepath);
+                    Directory.CreateDirectory(filePath);
                 }
 
-                var extension = file.FileName.Split('.').Last();
-                filename = Path.GetFileNameWithoutExtension(filename);
-                filename = Regex.Replace(filename, "/[^a-zA-Z0-9]+/g", "-");
+                var extension = fileName.Split('.').Last();
+                fileName = Path.GetFileNameWithoutExtension(fileName);
+                fileName = Regex.Replace(fileName, "/[^a-zA-Z0-9]+/g", "-");
 
-                if (System.IO.File.Exists($"{filepath}{filename}.{extension}"))
+                if (System.IO.File.Exists($"{filePath}{fileName}.{extension}"))
                 {
                     var suffix = 0;
-                    while (System.IO.File.Exists($"{filepath}{filename}-{suffix}.{extension}"))
+                    while (System.IO.File.Exists($"{filePath}{fileName}-{suffix}.{extension}"))
                     {
                         suffix++;
                     }
 
-                    filename += $"-{suffix}";
+                    fileName += $"-{suffix}";
                 }
 
-                filename += $".{extension}";
+                fileName += $".{extension}";
 
-                using FileStream fs = System.IO.File.Create($"{filepath}{filename}");
-                await file.CopyToAsync(fs);
+                using FileStream fs = System.IO.File.Create($"{filePath}{fileName}");
+                await fs.WriteAsync(fileContent);
                 fs.Flush();
 
-                return filename;
+                return fileName;
             }
             catch (Exception e)
             {
