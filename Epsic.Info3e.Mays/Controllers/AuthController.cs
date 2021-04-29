@@ -31,7 +31,7 @@ namespace Epsic.Info3e.Mays.Controllers
         [Route("Create")]
         public async Task<IActionResult> Create([FromBody] CreateAccountRequest user)
         {
-            var newUser = new IdentityUser { Email = user.Email, UserName = user.Email };
+            var newUser = new IdentityUser { Email = user.Email, UserName = user.Name };
 
             var isCreated = await _userManager.CreateAsync(newUser, user.Password);
 
@@ -98,7 +98,6 @@ namespace Epsic.Info3e.Mays.Controllers
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim("Id", user.Id),
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                     new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 }),
                 Claims = new Dictionary<string, object>(),
