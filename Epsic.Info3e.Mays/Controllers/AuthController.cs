@@ -52,8 +52,15 @@ namespace Epsic.Info3e.Mays.Controllers
         [Route("Login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest user)
         {
-            // Vérifier si l'utilisateur avec le même email existe
-            var existingUser = await _userManager.FindByEmailAsync(user.Email);
+            IdentityUser existingUser;
+            if (user.Input.Contains('@'))
+            {
+                // Vérifier si l'utilisateur avec le même email existe
+                existingUser = await _userManager.FindByEmailAsync(user.Input);
+            } else {
+                // User entered their name instead of their email
+                existingUser = await _userManager.FindByNameAsync(user.Input);
+            }
             if (existingUser != null)
             {
                 // Maintenant, nous devons vérifier si l'utilisateur a entré le bon mot de passe.

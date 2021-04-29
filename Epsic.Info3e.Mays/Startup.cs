@@ -69,6 +69,10 @@ namespace Epsic.Info3e.Mays
                 options.Password.RequireLowercase = true;
                 options.Password.RequireUppercase = true;
                 options.Password.RequireDigit = true;
+
+                // Prevent email-like usernames
+                options.User.AllowedUserNameCharacters = options.User.AllowedUserNameCharacters.Replace("@", "");
+                options.User.RequireUniqueEmail = true;
             })
                 .AddEntityFrameworkStores<MaysDbContext>();
 

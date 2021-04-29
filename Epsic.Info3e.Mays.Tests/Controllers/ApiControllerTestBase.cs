@@ -1,7 +1,3 @@
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
-using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.Hosting;
 using System.Linq;
@@ -9,9 +5,15 @@ using Microsoft.Extensions.Logging;
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Epsic.Info3e.Mays.DbContext;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Epsic.Info3e.Mays.Context;
+using Microsoft.AspNetCore.Identity;
+using NUnit.Framework;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Text.Json;
+using System.Net.Http.Json;
+using Epsic.Info3e.Mays.Seeders;
 
 namespace Epsic.Info3e.Mays.Tests.Controllers
 {
@@ -28,7 +30,7 @@ namespace Epsic.Info3e.Mays.Tests.Controllers
 
                 services.AddDbContext<MaysDbContext>(options =>
                 {
-                    options.UseInMemoryDatabase("Epsic.Rpg");
+                    options.UseInMemoryDatabase("Mays.db");
                 });
 
                 var sp = services.BuildServiceProvider();
@@ -38,12 +40,14 @@ namespace Epsic.Info3e.Mays.Tests.Controllers
                     var scopedServices = scope.ServiceProvider;
                     var db = scopedServices.GetRequiredService<MaysDbContext>();
                     var logger = scopedServices.GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
+                    var userManager = scopedServices.GetRequiredService<UserManager<IdentityUser>>();
+                    var roleManager = scopedServices.GetRequiredService<RoleManager<IdentityRole>>();
 
                     db.Database.EnsureCreated();
 
                     try
                     {
-                        ResetInMemoryDatabase(db);
+                        ResetInMemoryDatabase(db, userManager, roleManager);
                     }
                     catch (Exception ex)
                     {
@@ -53,18 +57,46 @@ namespace Epsic.Info3e.Mays.Tests.Controllers
             });
         }
 
-        private static void ResetInMemoryDatabase(MaysDbContext db)
+        private static async void ResetInMemoryDatabase(MaysDbContext db,
+                                                        UserManager<IdentityUser> userManager,
+                                                        RoleManager<IdentityRole> roleManager)
         {
-            db.RemoveRange(db.Characters);
+            // Clear db
+            db.RemoveRange(db.Posts);
+            db.RemoveRange(db.Users);
+            db.RemoveRange(db.Roles);
+            db.RemoveRange(db.UserRoles);
             db.SaveChanges();
 
-            /*db.AddRange(new List<Character>
-                        {
-                            new Character { Id = 1, Name = "Pierre"},
-                            new Character { Id = 2, Name = "Paul"},
-                            new Character { Id = 3, Name = "Jacques"},
-                        });*/
-            db.SaveChanges();
+            var users = new List<IdentityUser>
+            {
+                new IdentityUser {
+                    UserName = "pierre",
+                    Email = "pierre@hotmail.com",
+                },
+                new IdentityUser {
+                    UserName = "paul",
+                    Email = "paul@gmail.com",
+                },
+                new IdentityUser {
+                    UserName = "jacques",
+                    Email = "jacques@bluwin.com",
+                },
+            };
+
+            // Add users
+            await userManager.CreateAsync(users[0], "P1erre++");
+            await userManager.CreateAsync(users[1], "P4ul+-+-");
+            await userManager.CreateAsync(users[2], "Jacqu3s-");
+
+            // Add roles
+            SeedDataApplicationRoles.SeedRoles(roleManager);
+
+            // Link users and roles
+            foreach (var user in users)
+            {
+                await userManager.AddToRoleAsync(user, "user");
+            }
         }
     }
 
@@ -73,7 +105,7 @@ namespace Epsic.Info3e.Mays.Tests.Controllers
         private CustomWebApplicationFactory<Startup> _factory;
         private HttpClient _client;
 
-        [TestInitialize]
+        [SetUp]
         public void SetupTest()
         {
             _factory = new CustomWebApplicationFactory<Startup>();
@@ -114,6 +146,8 @@ namespace Epsic.Info3e.Mays.Tests.Controllers
         protected async Task<U> PostAsync<T, U>(string url, T body)
         {
             var response = await _client.PostAsJsonAsync(url, body);
+
+            Console.WriteLine(response);
 
             return await response.Content.ReadFromJsonAsync<U>();
         }
