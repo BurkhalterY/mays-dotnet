@@ -57,10 +57,16 @@ namespace Epsic.Info3e.Mays.Controllers
             return NoContent();
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<IEnumerable<Like>> GetLikes(string userId)
+        [HttpGet("user/{userId}")]
+        public ActionResult<IEnumerable<Like>> GetUserLikes(string userId)
         {
             return _context.Like.Where(l => l.UserId == userId).ToList();
+        }
+
+        [HttpGet("post/{postId}")]
+        public ActionResult<IEnumerable<Like>> GetPostLikes(string postId)
+        {
+            return _context.Like.Where(l => l.PostId == postId).ToList();
         }
 
         private bool LikeExists(Like like)
