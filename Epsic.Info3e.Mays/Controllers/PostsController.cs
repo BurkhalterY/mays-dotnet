@@ -187,27 +187,33 @@ namespace Epsic.Info3e.Mays.Controllers
                 }
 
                 var extension = fileName.Split('.').Last();
-                fileName = Path.GetFileNameWithoutExtension(fileName);
-                fileName = Regex.Replace(fileName, "/[^a-zA-Z0-9]+/g", "-");
+                var authorizationResult = await _authorizationService.AuthorizeAsync(User, extension, "Extension");
 
-                if (System.IO.File.Exists($"{filePath}{fileName}.{extension}"))
+                if (authorizationResult.Succeeded)
                 {
-                    var suffix = 0;
-                    while (System.IO.File.Exists($"{filePath}{fileName}-{suffix}.{extension}"))
+                    fileName = Path.GetFileNameWithoutExtension(fileName);
+                    fileName = Regex.Replace(fileName, "/[^a-zA-Z0-9]+/g", "-");
+
+                    if (System.IO.File.Exists($"{filePath}{fileName}.{extension}"))
                     {
-                        suffix++;
+                        var suffix = 0;
+                        while (System.IO.File.Exists($"{filePath}{fileName}-{suffix}.{extension}"))
+                        {
+                            suffix++;
+                        }
+
+                        fileName += $"-{suffix}";
                     }
 
-                    fileName += $"-{suffix}";
+                    fileName += $".{extension}";
+
+                    using FileStream fs = System.IO.File.Create($"{filePath}{fileName}");
+                    await fs.WriteAsync(fileContent);
+                    fs.Flush();
+
+                    return fileName;
                 }
-
-                fileName += $".{extension}";
-
-                using FileStream fs = System.IO.File.Create($"{filePath}{fileName}");
-                await fs.WriteAsync(fileContent);
-                fs.Flush();
-
-                return fileName;
+                return null;
             }
             catch (Exception e)
             {

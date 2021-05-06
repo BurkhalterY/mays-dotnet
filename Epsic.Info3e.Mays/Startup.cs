@@ -101,6 +101,7 @@ namespace Epsic.Info3e.Mays
                 options.AddPolicy("SameUser", policy => policy.Requirements.Add(new SameUserRequirement()));
                 options.AddPolicy("Premium", policy => policy.Requirements.Add(new PremiumRequirement()));
                 options.AddPolicy("Admin", policy => policy.Requirements.Add(new AdminRequirement()));
+                options.AddPolicy("Extension", policy => policy.Requirements.Add(new ExtensionRequirement()));
             });
 
             services.AddCors(options =>
