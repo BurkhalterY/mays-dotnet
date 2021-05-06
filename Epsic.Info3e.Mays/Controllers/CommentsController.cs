@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Epsic.Info3e.Mays.DbContext;
 using Epsic.Info3e.Mays.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Epsic.Info3e.Mays.Controllers
 {
@@ -45,6 +46,7 @@ namespace Epsic.Info3e.Mays.Controllers
         // PUT: api/Comments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize(Roles = "user,premium,admin")]
         public async Task<IActionResult> PutComment(string id, Comment comment)
         {
             if (id != comment.Id)

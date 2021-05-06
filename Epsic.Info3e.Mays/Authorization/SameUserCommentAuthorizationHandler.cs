@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Epsic.Info3e.Mays.Authorization
 {
-    public class SameUserAuthorizationHandler : AuthorizationHandler<SameUserRequirement, Post>
+    public class SameUserCommentAuthorizationHandler : AuthorizationHandler<SameUserCommentRequirement, Post>
     {
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, SameUserRequirement requirement, Post resource)
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, SameUserCommentRequirement requirement, Post resource)
         {
             var userId = context.User.FindFirst("Id");
             if (userId.Value == resource.Author?.Id)
@@ -16,5 +16,5 @@ namespace Epsic.Info3e.Mays.Authorization
         }
     }
 
-    public class SameUserRequirement : IAuthorizationRequirement { }
+    public class SameUserCommentRequirement : IAuthorizationRequirement { }
 }

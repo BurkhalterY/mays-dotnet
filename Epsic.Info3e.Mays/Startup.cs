@@ -2,6 +2,7 @@ using System.Text;
 using Epsic.Info3e.Mays.Authorization;
 using Epsic.Info3e.Mays.Config;
 using Epsic.Info3e.Mays.DbContext;
+using Epsic.Info3e.Mays.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -98,9 +99,10 @@ namespace Epsic.Info3e.Mays
             });
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("SameUser", policy => policy.Requirements.Add(new SameUserRequirement()));
                 options.AddPolicy("Premium", policy => policy.Requirements.Add(new PremiumRequirement()));
                 options.AddPolicy("Admin", policy => policy.Requirements.Add(new AdminRequirement()));
+                options.AddPolicy("SameUserPost", policy => policy.Requirements.Add(new SameUserPostRequirement()));
+                options.AddPolicy("SameUserComment", policy => policy.Requirements.Add(new SameUserCommentRequirement()));
                 options.AddPolicy("Extension", policy => policy.Requirements.Add(new ExtensionRequirement()));
             });
 
@@ -111,6 +113,9 @@ namespace Epsic.Info3e.Mays
                         .AllowAnyMethod()
                         .AllowAnyHeader());
             });
+
+            services.AddTransient<IPostService, DbPostService>();
+            services.AddTransient<ILikeService, DbLikeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

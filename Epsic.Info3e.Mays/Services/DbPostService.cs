@@ -109,7 +109,7 @@ namespace Epsic.Info3e.Mays.Services
             var post = await _context.Posts.FindAsync(postId);
 
             var allowed = (await _authorizationService.AuthorizeAsync(user, "Admin")).Succeeded ||
-                (await _authorizationService.AuthorizeAsync(user, "SameUser")).Succeeded;
+                (await _authorizationService.AuthorizeAsync(user, "SameUserPost")).Succeeded;
 
             if (allowed)
             {
