@@ -40,7 +40,7 @@ namespace Epsic.Info3e.Mays.Controllers
         }
 
         // DELETE: api/Likes/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{idPost}")]
         public async Task<IActionResult> DeleteLike(string postId)
         {
             var userId = User.Claims.FirstOrDefault(x => x.Type == "Id").Value;
