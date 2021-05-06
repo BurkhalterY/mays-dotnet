@@ -13,7 +13,7 @@ namespace Epsic.Info3e.Mays.Models
         public string Id { get; set; }
         [Required]
         public string Title { get; set; }
-        [Required]
+        [JsonIgnore]
         public DateTime Date { get; set; }
         [JsonIgnore]
         public IdentityUser Author { get; set; }
