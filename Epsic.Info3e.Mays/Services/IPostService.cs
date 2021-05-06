@@ -47,7 +47,7 @@ namespace Epsic.Info3e.Mays.Services
                 Id = post.Id,
                 Title = post.Title,
                 Date = post.Date,
-                Author = new UserDto{ UserName = post.Author.UserName },
+                Author = new UserDto{ UserName = post?.Author?.UserName },
                 Content = post.Content,
                 FilePath = post.FilePath,
                 IsSpoiler = post.IsSpoiler,

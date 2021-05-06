@@ -34,14 +34,14 @@ namespace Epsic.Info3e.Mays.Services
 
         public async Task<IEnumerable<Post>> GetPostsAsync()
         {
-            return await _context.Posts.ToListAsync();
+            return await _context.Posts.Include(p => p.Author).ToListAsync();
         }
 
         public async Task<Post> GetPostAsync(string postId)
         {
             if (_context.Posts.Any(p => p.Id == postId))
             {
-                return await _context.Posts.FirstAsync(p => p.Id == postId);
+                return await _context.Posts.Include(p => p.Author).FirstAsync(p => p.Id == postId);
             }
 
             return null;
