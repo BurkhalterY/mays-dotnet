@@ -3,15 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Epsic.Info3e.Mays.DbContext;
 using Epsic.Info3e.Mays.Models;
 using Microsoft.AspNetCore.Authorization;
 using System;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Logging;
-using System.IO;
-using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Identity;
 using Epsic.Info3e.Mays.Services;
 
@@ -67,12 +62,16 @@ namespace Epsic.Info3e.Mays.Controllers
                 }
                 else
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
             }
             catch (NullReferenceException)
             {
                 return NotFound();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -83,6 +82,7 @@ namespace Epsic.Info3e.Mays.Controllers
         public async Task<ActionResult<PostDto>> PostPost(Post post)
         {
             post.Author = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(x => x.Type == "Id").Value);
+            post.Date = DateTime.Now;
 
             if (await _postService.AddPostAsync(post, User))
             {

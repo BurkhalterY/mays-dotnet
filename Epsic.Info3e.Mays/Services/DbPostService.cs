@@ -89,10 +89,9 @@ namespace Epsic.Info3e.Mays.Services
             }
             else
             {
+                // Just to make sure there is no file linked
                 post.FilePath = null;
             }
-
-            post.Date = DateTime.Now;
 
             await _context.Posts.AddAsync(post);
             await _context.SaveChangesAsync();
