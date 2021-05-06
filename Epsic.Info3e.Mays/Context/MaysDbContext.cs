@@ -14,5 +14,7 @@ namespace Epsic.Info3e.Mays.DbContext
         }
 
         public DbSet<Epsic.Info3e.Mays.Models.Like> Like { get; set; }
+
+        public DbSet<Epsic.Info3e.Mays.Models.Comment> Comment { get; set; }
     }
 }

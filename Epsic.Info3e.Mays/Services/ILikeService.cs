@@ -3,7 +3,7 @@ using Epsic.Info3e.Mays.Models;
 
 namespace Epsic.Info3e.Mays.Services
 {
-    interface ILikeService
+    public interface ILikeService
     {
         /// <summary>
         /// Adds a like by an user to a post
@@ -19,7 +19,7 @@ namespace Epsic.Info3e.Mays.Services
         /// <param name="userId">Id of the user unliking the post</param>
         /// <param name="postId">Id of the post to unlike</param>
         /// <returns>True if the like has been removed, false otherwise</returns>
-        public bool RemoveLike(string userId, string postId);
+        public void RemoveLike(string userId, string postId);
 
         /// <summary>
         /// Gets a list of likes by an user

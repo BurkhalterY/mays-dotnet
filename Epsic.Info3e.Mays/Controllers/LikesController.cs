@@ -1,10 +1,8 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Epsic.Info3e.Mays.DbContext;
 using Epsic.Info3e.Mays.Models;
-using System.Collections.Generic;
+using Epsic.Info3e.Mays.Services;
 
 namespace Epsic.Info3e.Mays.Controllers
 {
@@ -13,25 +11,24 @@ namespace Epsic.Info3e.Mays.Controllers
     public class LikesController : ControllerBase
     {
         private readonly MaysDbContext _context;
+        private readonly ILikeService _service;
 
-        public LikesController(MaysDbContext context)
+        public LikesController(MaysDbContext context, ILikeService service)
         {
             _context = context;
+            _service = service;
         }
 
         // POST: api/Likes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Like>> PostLike(string postId)
+        public ActionResult<Like> AllLike(string postId)
         {
             var userId = User.Claims.FirstOrDefault(x => x.Type == "Id").Value;
-            var like = new Like() { PostId = postId, UserId = userId };
 
-            if (!LikeExists(like))
+            if (_service.AddLike(userId, postId))
             {
-                _context.Like.Add(like);
-                await _context.SaveChangesAsync();
-                return CreatedAtAction("GetLike", new { id = like.Id }, like); // TODO
+                return CreatedAtAction("like", true);
             }
             else
             {
@@ -41,37 +38,25 @@ namespace Epsic.Info3e.Mays.Controllers
 
         // DELETE: api/Likes/5
         [HttpDelete("{idPost}")]
-        public async Task<IActionResult> DeleteLike(string postId)
+        public IActionResult RemoveLike(string postId)
         {
             var userId = User.Claims.FirstOrDefault(x => x.Type == "Id").Value;
 
-            var like = await _context.Like.FirstOrDefaultAsync(x => x.PostId == postId && x.UserId == userId);
-            if (like == null)
-            {
-                return NotFound();
-            }
-
-            _context.Like.Remove(like);
-            await _context.SaveChangesAsync();
+            _service.RemoveLike(userId, postId);
 
             return NoContent();
         }
 
         [HttpGet("user/{userId}")]
-        public ActionResult<IEnumerable<Like>> GetUserLikes(string userId)
+        public ActionResult<Like> GetUserLikes(string userId)
         {
-            return _context.Like.Where(l => l.UserId == userId).ToList();
+            return Ok(_service.GetUserLikes(userId));
         }
 
         [HttpGet("post/{postId}")]
-        public ActionResult<IEnumerable<Like>> GetPostLikes(string postId)
+        public ActionResult<Like> GetPostLikes(string postId)
         {
-            return _context.Like.Where(l => l.PostId == postId).ToList();
-        }
-
-        private bool LikeExists(Like like)
-        {
-            return _context.Like.Any(e => e.PostId == like.PostId && e.UserId == like.UserId);
+            return Ok(_service.GetPostLikes(postId));
         }
     }
 }

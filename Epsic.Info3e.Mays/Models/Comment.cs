@@ -6,35 +6,26 @@ using System.Text.Json.Serialization;
 
 namespace Epsic.Info3e.Mays.Models
 {
-    public class Post
+    public class Comment
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [JsonIgnore]
         public string Id { get; set; }
         [Required]
-        public string Title { get; set; }
-        [JsonIgnore]
         public DateTime Date { get; set; }
         [JsonIgnore]
         public IdentityUser Author { get; set; }
+        [Required]
         public string Content { get; set; }
-        [NotMapped]
-        public string FileName { get; set; }
-        [NotMapped]
-        public byte[] FileContent { get; set; }
-        [JsonIgnore]
-        public string FilePath { get; set; }
         public bool IsSpoiler { get; set; }
     }
 
-    public class PostDto
+    public class CommentDto
     {
         public string Id { get; set; }
-        public string Title { get; set; }
         public DateTime Date { get; set; }
         public UserDto Author { get; set; }
         public string Content { get; set; }
-        public string FilePath { get; set; }
         public bool IsSpoiler { get; set; }
     }
 }
