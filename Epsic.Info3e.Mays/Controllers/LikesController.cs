@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Epsic.Info3e.Mays.DbContext;
 using Epsic.Info3e.Mays.Models;
+using System.Collections.Generic;
 
 namespace Epsic.Info3e.Mays.Controllers
 {
@@ -54,6 +55,12 @@ namespace Epsic.Info3e.Mays.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<IEnumerable<Like>> GetLikes(string userId)
+        {
+            return _context.Like.Where(l => l.UserId == userId).ToList();
         }
 
         private bool LikeExists(Like like)
