@@ -1,22 +1,24 @@
 using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using Epsic.Info3e.Mays.Models;
 
 namespace Epsic.Info3e.Mays.Services
 {
-    interface IPostService
+    public interface IPostService
     {
         /// <summary>
         /// Returns a list of posts
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Post> GetPosts();
+        public Task<IEnumerable<Post>> GetPostsAsync();
 
         /// <summary>
         /// Gets a post by its id
         /// </summary>
         /// <param name="postId">Id of the post to get</param>
         /// <returns></returns>
-        public Post GetPost(string postId);
+        public Task<Post> GetPostAsync(string postId);
 
         /// <summary>
         /// Updates a post's data
@@ -24,26 +26,32 @@ namespace Epsic.Info3e.Mays.Services
         /// <param name="postId">Id of the post to update</param>
         /// <param name="post">Post to update</param>
         /// <returns>True if the post is updated, false otherwise</returns>
-        public bool UpdatePost(string postId, Post post);
+        public Task<bool> UpdatePostAsync(string postId, Post post);
 
         /// <summary>
         /// Adds a post
         /// </summary>
         /// <param name="post">Post to add</param>
         /// <returns>True if the post is added, false otherwise</returns>
-        public bool AddPost(Post post);
+        public Task<bool> AddPostAsync(Post post, ClaimsPrincipal user);
 
         /// <summary>
         /// Deletes a post
         /// </summary>
         /// <param name="postId">Id of the post to delete</param>
-        public void DeletePost(string postId);
+        public Task<bool> DeletePostAsync(string postId, ClaimsPrincipal user);
 
-        /// <summary>
-        /// Checks if a post exists
-        /// </summary>
-        /// <param name="postId">Id of the post to get</param>
-        /// <returns>True if the post exists, false otherwise</returns>
-        public bool PostExists(string postId);
+        public PostDto ToPostDto(Post post)
+        {
+            return new PostDto {
+                Id = post.Id,
+                Title = post.Title,
+                Date = post.Date,
+                Author = new UserDto{ UserName = post.Author.UserName },
+                Content = post.Content,
+                FilePath = post.FilePath,
+                IsSpoiler = post.IsSpoiler,
+            };
+        }
     }
 }
