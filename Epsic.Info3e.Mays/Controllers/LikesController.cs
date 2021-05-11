@@ -28,7 +28,7 @@ namespace Epsic.Info3e.Mays.Controllers
 
             if (_service.AddLike(userId, postId))
             {
-                return CreatedAtAction("like", true);
+                return StatusCode(201);
             }
             else
             {
