@@ -37,7 +37,7 @@ namespace Epsic.Info3e.Mays.Controllers
         }
 
         // DELETE: api/Likes/5
-        [HttpDelete("{idPost}")]
+        [HttpDelete("{postId}")]
         public IActionResult RemoveLike(string postId)
         {
             var userId = User.Claims.FirstOrDefault(x => x.Type == "Id").Value;
