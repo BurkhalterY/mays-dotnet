@@ -149,18 +149,19 @@ namespace Epsic.Info3e.Mays.Services
                 var extension = fileName.Split('.').Last();
                 var allowed = (await _authorizationService.AuthorizeAsync(user, extension, "Extension")).Succeeded;
 
-                if (!allowed)
+                // TODO
+                /*if (!allowed)
                 {
                     return null;
-                }
+                }*/
 
                 fileName = Path.GetFileNameWithoutExtension(fileName);
                 fileName = Regex.Replace(fileName, "/[^a-zA-Z0-9]+/g", "-");
 
-                if (System.IO.File.Exists($"{filePath}{fileName}.{extension}"))
+                if (File.Exists($"{filePath}{fileName}.{extension}"))
                 {
                     var suffix = 0;
-                    while (System.IO.File.Exists($"{filePath}{fileName}-{suffix}.{extension}"))
+                    while (File.Exists($"{filePath}{fileName}-{suffix}.{extension}"))
                     {
                         suffix++;
                     }
@@ -170,7 +171,7 @@ namespace Epsic.Info3e.Mays.Services
 
                 fileName += $".{extension}";
 
-                using FileStream fs = System.IO.File.Create($"{filePath}{fileName}");
+                using FileStream fs = File.Create($"{filePath}{fileName}");
                 await fs.WriteAsync(fileContent);
                 fs.Flush();
 

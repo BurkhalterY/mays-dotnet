@@ -11,7 +11,7 @@ namespace Epsic.Info3e.Mays.Authorization
             var freeExtension = new string[] { "png", "jpg", "jpeg", "gif", "bmp", "webp" }.ToList();
             var premiumExtension = new string[] { "mp4", "webm", "mp3", "wav" }.ToList();
             premiumExtension.AddRange(freeExtension);
-
+            
             if (context.User.IsInRole("user"))
             {
                 if (freeExtension.Contains(extension))
@@ -26,7 +26,7 @@ namespace Epsic.Info3e.Mays.Authorization
                     context.Succeed(requirement);
                 }
             }
-               
+
             return Task.CompletedTask;
         }
     }
