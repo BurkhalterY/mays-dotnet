@@ -18,7 +18,7 @@ namespace Epsic.Info3e.Mays.Controllers
             _userManager = userManager;
         }
 
-        [HttpPost("{userId}")]
+        [HttpPost("Enable/{userId}")]
         public async Task<IActionResult> Enable(string userId = null)
         {
             if (!User.IsInRole("admin"))
@@ -45,7 +45,7 @@ namespace Epsic.Info3e.Mays.Controllers
             return Ok();
         }
 
-        [HttpPost("{userId}")]
+        [HttpPost("Disable/{userId}")]
         public async Task<IActionResult> Disable(string userId = null)
         {
             if (!User.IsInRole("admin"))
