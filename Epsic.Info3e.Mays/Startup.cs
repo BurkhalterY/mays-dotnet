@@ -109,6 +109,10 @@ namespace Epsic.Info3e.Mays
                 options.AddPolicy("Extension", policy => policy.Requirements.Add(new ExtensionRequirement()));
             });
 
+            services.AddIdentityCore<IdentityUser>()
+                .AddEntityFrameworkStores<MaysDbContext>()
+                .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>(TokenOptions.DefaultProvider);
+
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
