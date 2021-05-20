@@ -4,6 +4,7 @@ using Epsic.Info3e.Mays.Config;
 using Epsic.Info3e.Mays.DbContext;
 using Epsic.Info3e.Mays.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -116,6 +117,7 @@ namespace Epsic.Info3e.Mays
 
             services.AddTransient<IPostService, DbPostService>();
             services.AddTransient<ILikeService, DbLikeService>();
+            services.AddSingleton<IAuthorizationHandler, ExtensionAuthorizationHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

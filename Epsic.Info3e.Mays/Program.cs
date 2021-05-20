@@ -22,8 +22,10 @@ namespace Epsic.Info3e.Mays
                 try
                 {
                     var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
 
                     SeedDataApplicationRoles.SeedRoles(rolesManager);
+                    SeedDataApplicationUsers.SeedUsers(userManager);
                 }
                 catch (Exception ex)
                 {

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Epsic.Info3e.Mays.Authorization;
 using Epsic.Info3e.Mays.DbContext;
 using Epsic.Info3e.Mays.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -149,11 +150,10 @@ namespace Epsic.Info3e.Mays.Services
                 var extension = fileName.Split('.').Last();
                 var allowed = (await _authorizationService.AuthorizeAsync(user, extension, "Extension")).Succeeded;
 
-                // TODO
-                /*if (!allowed)
+                if (!allowed)
                 {
                     return null;
-                }*/
+                }
 
                 fileName = Path.GetFileNameWithoutExtension(fileName);
                 fileName = Regex.Replace(fileName, "/[^a-zA-Z0-9]+/g", "-");

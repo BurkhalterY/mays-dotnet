@@ -10,20 +10,19 @@ namespace Epsic.Info3e.Mays.Authorization
         {
             var freeExtension = new string[] { "png", "jpg", "jpeg", "gif", "bmp", "webp" }.ToList();
             var premiumExtension = new string[] { "mp4", "webm", "mp3", "wav" }.ToList();
-            premiumExtension.AddRange(freeExtension);
-            
+
             if (context.User.IsInRole("user"))
             {
                 if (freeExtension.Contains(extension))
                 {
                     context.Succeed(requirement);
                 }
-            }
-            else if (context.User.IsInRole("premium") || context.User.IsInRole("admin"))
-            {
-                if (premiumExtension.Contains(extension))
+                else if (context.User.IsInRole("premium") || context.User.IsInRole("admin"))
                 {
-                    context.Succeed(requirement);
+                    if (premiumExtension.Contains(extension))
+                    {
+                        context.Succeed(requirement);
+                    }
                 }
             }
 
