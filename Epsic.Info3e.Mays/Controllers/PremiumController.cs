@@ -21,13 +21,16 @@ namespace Epsic.Info3e.Mays.Controllers
         [HttpPost("{userId}")]
         public async Task<IActionResult> Enable(string userId = null)
         {
-            if (!User.IsInRole("admin") && !User.IsInRole("premium"))
+            if (!User.IsInRole("admin"))
             {
-                // Free users can only premium themselves
-                userId ??= User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
-            }
+                if (!User.IsInRole("premium"))
+                {
+                    // Free users can only premium themselves
+                    userId ??= User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
+                }
 
-            //TODO Check for credit card
+                //TODO Check for credit card
+            }
 
             var user = await _userManager.FindByIdAsync(userId);
             var roles = await _userManager.GetRolesAsync(user);
