@@ -81,6 +81,11 @@ namespace Epsic.Info3e.Mays.Controllers
         [Authorize(Roles = "user,premium,admin")]
         public async Task<ActionResult<PostDto>> PostPost(Post post)
         {
+            if (post.Content.Length == 0 || post.FileContent.Length == 0)
+            {
+                return BadRequest();
+            }
+
             post.Author = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(x => x.Type == "Id").Value);
             post.Date = DateTime.Now;
 
