@@ -1,7 +1,9 @@
+using System;
 using System.Text;
 using Epsic.Info3e.Mays.Authorization;
 using Epsic.Info3e.Mays.Config;
 using Epsic.Info3e.Mays.DbContext;
+using Epsic.Info3e.Mays.Seeders;
 using Epsic.Info3e.Mays.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -138,6 +140,27 @@ namespace Epsic.Info3e.Mays
             else
             {
                 loggerFactory.AddFile("Logs/log.txt", LogLevel.Error);
+            }
+
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<MaysDbContext>();
+                context.Database.Migrate();
+
+                var services = serviceScope.ServiceProvider;
+
+                try
+                {
+                    var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+
+                    SeedDataApplicationRoles.SeedRoles(rolesManager);
+                    SeedDataApplicationUsers.SeedUsers(userManager);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
             }
 
             app.UseDefaultFiles();
