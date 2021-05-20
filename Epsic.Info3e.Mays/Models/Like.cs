@@ -10,7 +10,6 @@ namespace Epsic.Info3e.Mays.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [JsonIgnore]
         public string Id { get; set; }
-        [JsonIgnore]
         public string UserId { get; set; }
         [JsonIgnore]
         public IdentityUser User { get; set; }

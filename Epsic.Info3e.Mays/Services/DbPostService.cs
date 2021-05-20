@@ -5,7 +5,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Epsic.Info3e.Mays.Authorization;
 using Epsic.Info3e.Mays.DbContext;
 using Epsic.Info3e.Mays.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -35,14 +34,17 @@ namespace Epsic.Info3e.Mays.Services
 
         public async Task<IEnumerable<Post>> GetPostsAsync()
         {
-            return await _context.Posts.Include(p => p.Author).ToListAsync();
+            return await _context.Posts
+                .Include(p => p.Author)
+                .Include(p => p.Likes)
+                .ToListAsync();
         }
 
         public async Task<Post> GetPostAsync(string postId)
         {
             if (_context.Posts.Any(p => p.Id == postId))
             {
-                return await _context.Posts.Include(p => p.Author).FirstAsync(p => p.Id == postId);
+                return await _context.Posts.Include(p => p.Author).Include(p => p.Likes).FirstAsync(p => p.Id == postId);
             }
 
             return null;

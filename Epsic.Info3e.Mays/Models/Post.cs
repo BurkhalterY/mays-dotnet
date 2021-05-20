@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -25,6 +26,8 @@ namespace Epsic.Info3e.Mays.Models
         [JsonIgnore]
         public string FilePath { get; set; }
         public bool IsSpoiler { get; set; }
+        [JsonIgnore]
+        public IList<Like> Likes { get; set; }
     }
 
     public class PostDto
@@ -36,5 +39,7 @@ namespace Epsic.Info3e.Mays.Models
         public string Content { get; set; }
         public string FilePath { get; set; }
         public bool IsSpoiler { get; set; }
+        public int CountLikes { get; set; }
+        public bool IsLiked { get; set; }
     }
 }

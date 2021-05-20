@@ -31,7 +31,7 @@ namespace Epsic.Info3e.Mays.Controllers
         public async Task<ActionResult<IEnumerable<PostDto>>> GetPosts()
         {
             return (await _postService.GetPostsAsync())
-                .Select(post => _postService.ToPostDto(post))
+                .Select(post => _postService.ToPostDto(post, getCurrentUserId()))
                 .ToList();
         }
 
@@ -46,7 +46,7 @@ namespace Epsic.Info3e.Mays.Controllers
                 return NotFound();
             }
 
-            return _postService.ToPostDto(post);
+            return _postService.ToPostDto(post, getCurrentUserId());
         }
 
         // PUT: api/Posts/5
@@ -86,7 +86,7 @@ namespace Epsic.Info3e.Mays.Controllers
 
             if (await _postService.AddPostAsync(post, User))
             {
-                var result = _postService.ToPostDto(await _postService.GetPostAsync(post.Id));
+                var result = _postService.ToPostDto(await _postService.GetPostAsync(post.Id), getCurrentUserId());
                 return CreatedAtAction("GetPost", new { id = post.Id }, post);
             }
             else
@@ -114,6 +114,15 @@ namespace Epsic.Info3e.Mays.Controllers
             {
                 return NotFound();
             }
+        }
+
+        private string getCurrentUserId()
+        {
+            if (User.Claims.Any(x => x.Type == "Id"))
+            {
+                return User.Claims.FirstOrDefault(x => x.Type == "Id").Value;
+            }
+            return null;
         }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Epsic.Info3e.Mays.Models;
@@ -41,7 +42,7 @@ namespace Epsic.Info3e.Mays.Services
         /// <param name="postId">Id of the post to delete</param>
         public Task<bool> DeletePostAsync(string postId, ClaimsPrincipal user);
 
-        public PostDto ToPostDto(Post post)
+        public PostDto ToPostDto(Post post, string userId)
         {
             return new PostDto {
                 Id = post.Id,
@@ -51,6 +52,8 @@ namespace Epsic.Info3e.Mays.Services
                 Content = post.Content,
                 FilePath = post.FilePath,
                 IsSpoiler = post.IsSpoiler,
+                CountLikes = post.Likes.Count,
+                IsLiked = post.Likes.Any(l => l.UserId == userId),
             };
         }
     }
