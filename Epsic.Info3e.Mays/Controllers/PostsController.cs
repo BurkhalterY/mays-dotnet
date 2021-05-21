@@ -81,7 +81,7 @@ namespace Epsic.Info3e.Mays.Controllers
         [Authorize(Roles = "user,premium,admin")]
         public async Task<ActionResult<PostDto>> PostPost(Post post)
         {
-            if (post.Content.Length == 0 || post.FileContent.Length == 0)
+            if (post.Content.Length == 0 && post.FileContent.Length == 0)
             {
                 return BadRequest();
             }
