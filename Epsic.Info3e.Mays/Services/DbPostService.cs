@@ -37,6 +37,7 @@ namespace Epsic.Info3e.Mays.Services
             return await _context.Posts
                 .Include(p => p.Author)
                 .Include(p => p.Likes)
+                .OrderByDescending(p => p.Date)
                 .ToListAsync();
         }
 
@@ -88,12 +89,23 @@ namespace Epsic.Info3e.Mays.Services
                     return false;
                 }
 
+                var imageExtensions = new string[] { "png", "jpg", "jpeg", "gif", "bmp", "webp" }.ToList();
+                var videoExtensions = new string[] { "mp4", "webm" }.ToList();
+                var audioExtensions = new string[] { "mp3", "wav" }.ToList();
+
+                var extension = filePath.Split('.').Last();
+                var fileType = imageExtensions.Contains(extension) ? "image" :
+                               videoExtensions.Contains(extension) ? "video" :
+                               audioExtensions.Contains(extension) ? "audio" : "unknow";
+
                 post.FilePath = filePath;
+                post.FileType = fileType;
             }
             else
             {
                 // Just to make sure there is no file linked
                 post.FilePath = null;
+                post.FileType = null;
             }
 
             await _context.Posts.AddAsync(post);

@@ -51,6 +51,7 @@ namespace Epsic.Info3e.Mays.Services
                 Author = new UserDto{ UserName = post?.Author?.UserName },
                 Content = post.Content,
                 FilePath = post.FilePath,
+                FileType = post.FileType,
                 IsSpoiler = post.IsSpoiler,
                 CountLikes = post.Likes.Count,
                 IsLiked = post.Likes.Any(l => l.UserId == userId),

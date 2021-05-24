@@ -25,6 +25,8 @@ namespace Epsic.Info3e.Mays.Models
         public byte[] FileContent { get; set; }
         [JsonIgnore]
         public string FilePath { get; set; }
+        [JsonIgnore]
+        public string FileType { get; set; }
         public bool IsSpoiler { get; set; }
         [JsonIgnore]
         public IList<Like> Likes { get; set; }
@@ -38,6 +40,7 @@ namespace Epsic.Info3e.Mays.Models
         public UserDto Author { get; set; }
         public string Content { get; set; }
         public string FilePath { get; set; }
+        public string FileType { get; set; }
         public bool IsSpoiler { get; set; }
         public int CountLikes { get; set; }
         public bool IsLiked { get; set; }
