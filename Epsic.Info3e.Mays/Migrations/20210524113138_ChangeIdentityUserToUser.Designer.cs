@@ -3,14 +3,16 @@ using System;
 using Epsic.Info3e.Mays.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Epsic.Info3e.Mays.Migrations
 {
     [DbContext(typeof(MaysDbContext))]
-    partial class MaysDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210524113138_ChangeIdentityUserToUser")]
+    partial class ChangeIdentityUserToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,7 +41,7 @@ namespace Epsic.Info3e.Mays.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comment");
                 });
 
             modelBuilder.Entity("Epsic.Info3e.Mays.Models.Like", b =>
@@ -61,7 +63,7 @@ namespace Epsic.Info3e.Mays.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Likes");
+                    b.ToTable("Like");
                 });
 
             modelBuilder.Entity("Epsic.Info3e.Mays.Models.Post", b =>
@@ -301,7 +303,7 @@ namespace Epsic.Info3e.Mays.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<string>("Avatar")
+                    b.Property<string>("ProfilePicture")
                         .HasColumnType("TEXT");
 
                     b.HasDiscriminator().HasValue("User");

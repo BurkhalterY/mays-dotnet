@@ -20,7 +20,7 @@ namespace Epsic.Info3e.Mays.Services
 
             if (!LikeExists(like))
             {
-                _context.Like.Add(like);
+                _context.Likes.Add(like);
                 _context.SaveChangesAsync();
                 return true;
             }
@@ -29,12 +29,12 @@ namespace Epsic.Info3e.Mays.Services
 
         public IEnumerable<Like> GetPostLikes(string postId)
         {
-            return _context.Like.Where(l => l.PostId == postId).ToList();
+            return _context.Likes.Where(l => l.PostId == postId).ToList();
         }
 
         public IEnumerable<Like> GetUserLikes(string userId)
         {
-            return _context.Like.Where(l => l.UserId == userId).ToList();
+            return _context.Likes.Where(l => l.UserId == userId).ToList();
         }
 
         public bool HasLiked(string userId, string postId)
@@ -44,19 +44,19 @@ namespace Epsic.Info3e.Mays.Services
 
         public void RemoveLike(string userId, string postId)
         {
-            var like = _context.Like.FirstOrDefault(x => x.PostId == postId && x.UserId == userId);
+            var like = _context.Likes.FirstOrDefault(x => x.PostId == postId && x.UserId == userId);
             if (like == null)
             {
                 return;
             }
 
-            _context.Like.Remove(like);
+            _context.Likes.Remove(like);
             _context.SaveChanges();
         }
 
         private bool LikeExists(Like like)
         {
-            return _context.Like.Any(e => e.PostId == like.PostId && e.UserId == like.UserId);
+            return _context.Likes.Any(e => e.PostId == like.PostId && e.UserId == like.UserId);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Epsic.Info3e.Mays.Tests.Controllers
         [TestCaseSource(nameof(CreateSuccessCases))]
         public async Task CreateSuccess(string username, string email, string password)
         {
-            var result = await PostAsync<CreateAccountRequest, IdentityUser>("api/Auth/Create", new CreateAccountRequest {
+            var result = await PostAsync<CreateAccountRequest, User>("api/Auth/Create", new CreateAccountRequest {
                 Email = email,
                 Name = username,
                 Password = password,

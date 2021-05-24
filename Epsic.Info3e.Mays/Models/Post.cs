@@ -17,7 +17,7 @@ namespace Epsic.Info3e.Mays.Models
         [JsonIgnore]
         public DateTime Date { get; set; }
         [JsonIgnore]
-        public IdentityUser Author { get; set; }
+        public User Author { get; set; }
         public string Content { get; set; }
         [NotMapped]
         public string FileName { get; set; }

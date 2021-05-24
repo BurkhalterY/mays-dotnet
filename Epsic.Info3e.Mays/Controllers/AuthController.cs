@@ -18,10 +18,10 @@ namespace Epsic.Info3e.Mays.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
         private readonly JwtConfig _jwtConfig;
 
-        public AuthController(UserManager<IdentityUser> userManager, IOptionsMonitor<JwtConfig> optionsMonitor)
+        public AuthController(UserManager<User> userManager, IOptionsMonitor<JwtConfig> optionsMonitor)
         {
             _userManager = userManager;
             _jwtConfig = optionsMonitor.CurrentValue;
@@ -31,7 +31,7 @@ namespace Epsic.Info3e.Mays.Controllers
         [Route("Create")]
         public async Task<IActionResult> Create([FromBody] CreateAccountRequest user)
         {
-            var newUser = new IdentityUser { Email = user.Email, UserName = user.Name };
+            var newUser = new User { Email = user.Email, UserName = user.Name };
 
             var isCreated = await _userManager.CreateAsync(newUser, user.Password);
 
@@ -52,7 +52,7 @@ namespace Epsic.Info3e.Mays.Controllers
         [Route("Login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest user)
         {
-            IdentityUser existingUser;
+            User existingUser;
             if (user.Input.Contains('@'))
             {
                 // Vérifier si l'utilisateur avec le même email existe
@@ -89,7 +89,7 @@ namespace Epsic.Info3e.Mays.Controllers
             });
         }
 
-        private string GenerateJwtToken(IdentityUser user, IList<string> roles, IList<Claim> claims)
+        private string GenerateJwtToken(User user, IList<string> roles, IList<Claim> claims)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
 

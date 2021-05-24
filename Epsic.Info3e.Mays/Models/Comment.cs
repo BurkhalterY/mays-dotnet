@@ -14,7 +14,7 @@ namespace Epsic.Info3e.Mays.Models
         [Required]
         public DateTime Date { get; set; }
         [JsonIgnore]
-        public IdentityUser Author { get; set; }
+        public User Author { get; set; }
         [Required]
         public string Content { get; set; }
         public bool IsSpoiler { get; set; }

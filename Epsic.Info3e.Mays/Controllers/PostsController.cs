@@ -16,10 +16,10 @@ namespace Epsic.Info3e.Mays.Controllers
     [ApiController]
     public class PostsController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
         private readonly IPostService _postService;
 
-        public PostsController(UserManager<IdentityUser> userManager,
+        public PostsController(UserManager<User> userManager,
                                IPostService postService)
         {
             _userManager = userManager;

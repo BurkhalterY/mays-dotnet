@@ -26,14 +26,14 @@ namespace Epsic.Info3e.Mays.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Comment>>> GetComment()
         {
-            return await _context.Comment.ToListAsync();
+            return await _context.Comments.ToListAsync();
         }
 
         // GET: api/Comments/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Comment>> GetComment(string id)
         {
-            var comment = await _context.Comment.FindAsync(id);
+            var comment = await _context.Comments.FindAsync(id);
 
             if (comment == null)
             {
@@ -80,7 +80,7 @@ namespace Epsic.Info3e.Mays.Controllers
         [HttpPost]
         public async Task<ActionResult<Comment>> PostComment(Comment comment)
         {
-            _context.Comment.Add(comment);
+            _context.Comments.Add(comment);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetComment", new { id = comment.Id }, comment);
@@ -90,13 +90,13 @@ namespace Epsic.Info3e.Mays.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteComment(string id)
         {
-            var comment = await _context.Comment.FindAsync(id);
+            var comment = await _context.Comments.FindAsync(id);
             if (comment == null)
             {
                 return NotFound();
             }
 
-            _context.Comment.Remove(comment);
+            _context.Comments.Remove(comment);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -104,7 +104,7 @@ namespace Epsic.Info3e.Mays.Controllers
 
         private bool CommentExists(string id)
         {
-            return _context.Comment.Any(e => e.Id == id);
+            return _context.Comments.Any(e => e.Id == id);
         }
     }
 }

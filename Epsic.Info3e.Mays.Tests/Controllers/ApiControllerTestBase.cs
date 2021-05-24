@@ -40,7 +40,7 @@ namespace Epsic.Info3e.Mays.Tests.Controllers
                     var scopedServices = scope.ServiceProvider;
                     var db = scopedServices.GetRequiredService<MaysDbContext>();
                     var logger = scopedServices.GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
-                    var userManager = scopedServices.GetRequiredService<UserManager<IdentityUser>>();
+                    var userManager = scopedServices.GetRequiredService<UserManager<User>>();
                     var roleManager = scopedServices.GetRequiredService<RoleManager<IdentityRole>>();
 
                     db.Database.EnsureCreated();
@@ -58,7 +58,7 @@ namespace Epsic.Info3e.Mays.Tests.Controllers
         }
 
         private static async void ResetInMemoryDatabase(MaysDbContext db,
-                                                        UserManager<IdentityUser> userManager,
+                                                        UserManager<User> userManager,
                                                         RoleManager<IdentityRole> roleManager)
         {
             // Clear db
@@ -68,17 +68,17 @@ namespace Epsic.Info3e.Mays.Tests.Controllers
             db.RemoveRange(db.UserRoles);
             db.SaveChanges();
 
-            var users = new List<IdentityUser>
+            var users = new List<User>
             {
-                new IdentityUser {
+                new User {
                     UserName = "pierre",
                     Email = "pierre@hotmail.com",
                 },
-                new IdentityUser {
+                new User {
                     UserName = "paul",
                     Email = "paul@gmail.com",
                 },
-                new IdentityUser {
+                new User {
                     UserName = "jacques",
                     Email = "jacques@bluwin.com",
                 },

@@ -3,6 +3,7 @@ using System.Text;
 using Epsic.Info3e.Mays.Authorization;
 using Epsic.Info3e.Mays.Config;
 using Epsic.Info3e.Mays.DbContext;
+using Epsic.Info3e.Mays.Models;
 using Epsic.Info3e.Mays.Seeders;
 using Epsic.Info3e.Mays.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -68,7 +69,7 @@ namespace Epsic.Info3e.Mays
 
             services.Configure<JwtConfig>(Configuration.GetSection("JwtConfig"));
 
-            services.AddIdentity<IdentityUser, IdentityRole>(options => {
+            services.AddIdentity<User, IdentityRole>(options => {
                 options.Password.RequiredLength = 8;
                 options.Password.RequireLowercase = true;
                 options.Password.RequireUppercase = true;
@@ -109,9 +110,9 @@ namespace Epsic.Info3e.Mays
                 options.AddPolicy("Extension", policy => policy.Requirements.Add(new ExtensionRequirement()));
             });
 
-            services.AddIdentityCore<IdentityUser>()
+            services.AddIdentityCore<User>()
                 .AddEntityFrameworkStores<MaysDbContext>()
-                .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>(TokenOptions.DefaultProvider);
+                .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
 
             services.AddCors(options =>
             {
@@ -152,7 +153,7 @@ namespace Epsic.Info3e.Mays
                 try
                 {
                     var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+                    var userManager = services.GetRequiredService<UserManager<User>>();
 
                     SeedDataApplicationRoles.SeedRoles(rolesManager);
                     SeedDataApplicationUsers.SeedUsers(userManager);

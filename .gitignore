@@ -10,6 +10,7 @@
 *.userosscache
 *.sln.docstates
 Epsic.Info3e.Mays/wwwroot/Assets
+Epsic.Info3e.Mays/wwwroot/Avatars
 Mays.db
 
 # User-specific files (MonoDevelop/Xamarin Studio)

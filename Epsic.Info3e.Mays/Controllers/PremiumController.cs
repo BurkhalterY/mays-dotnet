@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Epsic.Info3e.Mays.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +10,9 @@ namespace Epsic.Info3e.Mays.Controllers
     [ApiController]
     public class PremiumController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
 
-        public PremiumController(UserManager<IdentityUser> userManager)
+        public PremiumController(UserManager<User> userManager)
         {
             _userManager = userManager;
         }

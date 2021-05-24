@@ -1,11 +1,12 @@
 ﻿using System.Linq;
+using Epsic.Info3e.Mays.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace Epsic.Info3e.Mays.Seeders
 {
     public static class SeedDataApplicationUsers
     {
-        public static void SeedUsers(UserManager<IdentityUser> userManager)
+        public static void SeedUsers(UserManager<User> userManager)
         {
             var admins = new[] {
                 new {
@@ -21,7 +22,7 @@ namespace Epsic.Info3e.Mays.Seeders
                 if (!exists)
                 {
 
-                    var newAdmin = new IdentityUser {
+                    var newAdmin = new User {
                         Email = admin.Email,
                         UserName = admin.Username,
                     };

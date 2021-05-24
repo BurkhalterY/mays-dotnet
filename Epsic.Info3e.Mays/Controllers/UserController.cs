@@ -4,6 +4,10 @@ using Epsic.Info3e.Mays.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Linq;
+using System.IO;
+using System;
+using Microsoft.AspNetCore.Hosting;
+using Epsic.Info3e.Mays.DbContext;
 
 namespace Epsic.Info3e.Mays.Controllers
 {
@@ -12,11 +16,15 @@ namespace Epsic.Info3e.Mays.Controllers
     [Authorize(Roles = "user,premium,admin")]
     public class UserController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly MaysDbContext _context;
+        private readonly UserManager<User> _userManager;
+        private readonly IWebHostEnvironment _environment;
 
-        public UserController(UserManager<IdentityUser> userManager)
+        public UserController(MaysDbContext context, UserManager<User> userManager, IWebHostEnvironment environment)
         {
+            _context = context;
             _userManager = userManager;
+            _environment = environment;
         }
 
         [HttpGet]
@@ -24,7 +32,7 @@ namespace Epsic.Info3e.Mays.Controllers
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(x => x.Type == "Id").Value);
 
-            return new FullUserDto() { UserName = user.UserName, Email = user.Email };
+            return new FullUserDto() { UserName = user.UserName, Email = user.Email, Avatar = user.Avatar };
         }
 
         [HttpPut]
@@ -49,6 +57,53 @@ namespace Epsic.Info3e.Mays.Controllers
             else
             {
                 return Unauthorized();
+            }
+        }
+
+        [HttpPut]
+        [Route("avatar")]
+        public async Task<ActionResult> Avatar(AvatarUpload avatar)
+        {
+            try
+            {
+                if (!avatar.FileName.Contains('.'))
+                {
+                    return BadRequest();
+                }
+
+                var filePath = $"{_environment.WebRootPath}\\Avatars\\";
+                if (!Directory.Exists(filePath))
+                {
+                    Directory.CreateDirectory(filePath);
+                }
+
+                var extension = avatar.FileName.Split('.').Last();
+
+                if (!new string[] { "png", "jpg", "jpeg", "gif", "bmp", "webp" }.ToList().Contains(extension))
+                {
+                    return BadRequest();
+                }
+
+                var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(x => x.Type == "Id").Value);
+
+                // Replace image even if it's the same name because the username is unique
+
+                var fileName = user.UserName + "." + extension;
+
+                using FileStream fs = System.IO.File.Create($"{filePath}{fileName}");
+                await fs.WriteAsync(Convert.FromBase64String(avatar.FileContent));
+                fs.Flush();
+
+                user.Avatar = fileName;
+
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
             }
         }
     }

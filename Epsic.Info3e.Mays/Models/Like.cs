@@ -12,7 +12,7 @@ namespace Epsic.Info3e.Mays.Models
         public string Id { get; set; }
         public string UserId { get; set; }
         [JsonIgnore]
-        public IdentityUser User { get; set; }
+        public User User { get; set; }
         [Required]
         public string PostId { get; set; }
         [JsonIgnore]
