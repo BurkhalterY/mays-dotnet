@@ -29,6 +29,11 @@ namespace Epsic.Info3e.Mays.Controllers
 
         [HttpPost]
         [Route("Create")]
+        /// <summary>
+        /// Creates a new user, without logging them in
+        /// </summary>
+        /// <param name="user">Request with the user's name, password and email</param>
+        /// <returns>Either an ok with the created user, or a badrequest with the errors</returns>
         public async Task<IActionResult> Create([FromBody] CreateAccountRequest user)
         {
             var newUser = new User { Email = user.Email, UserName = user.Name };
@@ -50,6 +55,11 @@ namespace Epsic.Info3e.Mays.Controllers
 
         [HttpPost]
         [Route("Login")]
+        /// <summary>
+        /// Logs an user in
+        /// </summary>
+        /// <param name="user">Request with the user's password, and the user's name or email</param>
+        /// <returns>Ok with the jwttoken, or badrequest with a message</returns>
         public async Task<IActionResult> Login([FromBody] LoginRequest user)
         {
             User existingUser;
@@ -86,6 +96,11 @@ namespace Epsic.Info3e.Mays.Controllers
             });
         }
 
+        /// <summary>
+        /// Generates a jwttoken for an user
+        /// </summary>
+        /// <param name="user">User to generate the token for</param>
+        /// <returns>The token generated</returns>
         private async Task<string> GenerateJwtToken(User user)
         {
             var roles = await _userManager.GetRolesAsync(user);

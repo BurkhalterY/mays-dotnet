@@ -18,6 +18,11 @@ namespace Epsic.Info3e.Mays.Controllers
         }
 
         [HttpPost("Enable/{userId}")]
+        /// <summary>
+        /// Makes an user premium
+        /// </summary>
+        /// <param name="userId">Id of the user to premium, defaults to the current user if none is selected, or the user is neither premium nor admin</param>
+        /// <returns>Badrequest if the target user is already premium, or ok</returns>
         public async Task<IActionResult> Enable(string userId = null)
         {
             if (!User.IsInRole("admin"))
@@ -45,6 +50,11 @@ namespace Epsic.Info3e.Mays.Controllers
         }
 
         [HttpPost("Disable/{userId}")]
+        /// <summary>
+        /// Removes an user from premium
+        /// </summary>
+        /// <param name="userId">Id of the user to premium, defaults to the current user if they are not admin</param>
+        /// <returns>Forbid if the current user is neither admin nor premium, badrequest if the target user is not premium, ok otherwise</returns>
         public async Task<IActionResult> Disable(string userId = null)
         {
             if (!User.IsInRole("admin"))
