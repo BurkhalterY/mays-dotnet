@@ -24,13 +24,22 @@ namespace Epsic.Info3e.Mays.Controllers
 
         // GET: api/Comments
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Comment>>> GetComment()
+        /// <summary>
+        /// Gets a list of all comments
+        /// </summary>
+        /// <returns>A list of all comments</returns>
+        public async Task<ActionResult<IEnumerable<Comment>>> GetComments()
         {
             return await _context.Comments.ToListAsync();
         }
 
         // GET: api/Comments/5
         [HttpGet("{id}")]
+        /// <summary>
+        /// Gets a single comment
+        /// </summary>
+        /// <param name="id">Id of the comment to get</param>
+        /// <returns>The comment, or a notfound</returns>
         public async Task<ActionResult<Comment>> GetComment(string id)
         {
             var comment = await _context.Comments.FindAsync(id);
@@ -45,11 +54,21 @@ namespace Epsic.Info3e.Mays.Controllers
 
         // PUT: api/Comments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut]
         [Authorize(Roles = "user,premium,admin")]
-        public async Task<IActionResult> PutComment(string id, Comment comment)
+        /// <summary>
+        /// Updates a comment
+        /// </summary>
+        /// <param name="comment">Comment to update</param>
+        /// <returns>Badrequest if the comment does not exist, nocontent on edit, forbid if different author, or an exception</returns>
+        public async Task<IActionResult> PutComment(Comment comment)
         {
-            if (id != comment.Id)
+            if (getCurrentUserId() != (await _context.Comments.Include(c => c.Author).FirstAsync(c => c.Id == comment.Id)).Author.Id)
+            {
+                return Forbid();
+            }
+
+            if (!CommentExists(comment.Id))
             {
                 return BadRequest();
             }
@@ -62,14 +81,7 @@ namespace Epsic.Info3e.Mays.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CommentExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return NoContent();
@@ -78,6 +90,11 @@ namespace Epsic.Info3e.Mays.Controllers
         // POST: api/Comments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        /// <summary>
+        /// Adds a comment
+        /// </summary>
+        /// <param name="comment">Comment to add</param>
+        /// <returns>Createdataction on success</returns>
         public async Task<ActionResult<Comment>> PostComment(Comment comment)
         {
             _context.Comments.Add(comment);
@@ -88,9 +105,20 @@ namespace Epsic.Info3e.Mays.Controllers
 
         // DELETE: api/Comments/5
         [HttpDelete("{id}")]
+        /// <summary>
+        /// Deletes a comment
+        /// </summary>
+        /// <param name="id">Id of the comment to delete</param>
+        /// <returns>Notfound if the comment does not exist, forbid if not the author, nocontent if it no longer exists</returns>
         public async Task<IActionResult> DeleteComment(string id)
         {
-            var comment = await _context.Comments.FindAsync(id);
+            var comment = await _context.Comments.Include(c => c.Author).FirstAsync(c => c.Id == id);
+
+            if (getCurrentUserId() != comment.Author.Id)
+            {
+                return Forbid();
+            }
+
             if (comment == null)
             {
                 return NotFound();
@@ -102,9 +130,27 @@ namespace Epsic.Info3e.Mays.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Checks whether a comment exists
+        /// </summary>
+        /// <param name="id">Id of the comment to check for</param>
+        /// <returns>True if it exists, false otherwise</returns>
         private bool CommentExists(string id)
         {
             return _context.Comments.Any(e => e.Id == id);
+        }
+
+        /// <summary>
+        /// Returns the id of the current user
+        /// </summary>
+        /// <returns>The id of the current user if exists, or null</returns>
+        private string getCurrentUserId()
+        {
+            if (User.Claims.Any(x => x.Type == "Id"))
+            {
+                return User.Claims.FirstOrDefault(x => x.Type == "Id").Value;
+            }
+            return null;
         }
     }
 }

@@ -24,15 +24,16 @@ namespace Epsic.Info3e.Mays.Services
         /// <summary>
         /// Updates a post's data
         /// </summary>
-        /// <param name="postId">Id of the post to update</param>
+        /// <param name="userId">Id of the user trying to update</param>
         /// <param name="post">Post to update</param>
         /// <returns>True if the post is updated, false otherwise</returns>
-        public Task<bool> UpdatePostAsync(string postId, Post post);
+        public Task<bool> UpdatePostAsync(string userId, Post post);
 
         /// <summary>
         /// Adds a post
         /// </summary>
         /// <param name="post">Post to add</param>
+        /// <param name="user">User trying to add</param>
         /// <returns>True if the post is added, false otherwise</returns>
         public Task<bool> AddPostAsync(Post post, ClaimsPrincipal user);
 
@@ -40,6 +41,7 @@ namespace Epsic.Info3e.Mays.Services
         /// Deletes a post
         /// </summary>
         /// <param name="postId">Id of the post to delete</param>
+        /// <param name="user">User trying to delete</param>
         public Task<bool> DeletePostAsync(string postId, ClaimsPrincipal user);
 
         public PostDto ToPostDto(Post post, string userId)

@@ -51,9 +51,9 @@ namespace Epsic.Info3e.Mays.Services
             return null;
         }
 
-        public async Task<bool> UpdatePostAsync(string postId, Post post)
+        public async Task<bool> UpdatePostAsync(string userId, Post post)
         {
-            if (postId != post.Id)
+            if (userId != (await GetPostAsync(post.Id)).Author.Id)
             {
                 return false;
             }
@@ -66,7 +66,7 @@ namespace Epsic.Info3e.Mays.Services
             }
             catch(DbUpdateConcurrencyException)
             {
-                if (!await PostExistsAsync(postId))
+                if (!await PostExistsAsync(post.Id))
                 {
                     throw new NullReferenceException();
                 }

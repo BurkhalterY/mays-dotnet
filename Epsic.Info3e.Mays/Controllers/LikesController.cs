@@ -24,6 +24,11 @@ namespace Epsic.Info3e.Mays.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize(Roles = "user,premium,admin")]
+        /// <summary>
+        /// Adds a like to a post from the user
+        /// </summary>
+        /// <param name="postId">Id of the post liked</param>
+        /// <returns>Status 201 on success, or conflict on failure</returns>
         public ActionResult<Like> AddLike(string postId)
         {
             var userId = User.Claims.FirstOrDefault(x => x.Type == "Id").Value;
@@ -41,6 +46,11 @@ namespace Epsic.Info3e.Mays.Controllers
         // DELETE: api/Likes/5
         [HttpDelete("{postId}")]
         [Authorize(Roles = "user,premium,admin")]
+        /// <summary>
+        /// Removes a like for a post
+        /// </summary>
+        /// <param name="postId">Id of the post to remove the like from</param>
+        /// <returns>Nocontent, no matter what</returns>
         public IActionResult RemoveLike(string postId)
         {
             var userId = User.Claims.FirstOrDefault(x => x.Type == "Id").Value;
@@ -52,6 +62,11 @@ namespace Epsic.Info3e.Mays.Controllers
 
         // TODO : delete
         [HttpGet("user/{userId}")]
+        /// <summary>
+        /// Returns a list of likes by the user
+        /// </summary>
+        /// <param name="userId">Id of the user to get the likes from</param>
+        /// <returns>List of likes made by the user</returns>
         public ActionResult<Like> GetUserLikes(string userId)
         {
             return Ok(_service.GetUserLikes(userId));
@@ -59,6 +74,11 @@ namespace Epsic.Info3e.Mays.Controllers
 
         // TODO : delete
         [HttpGet("post/{postId}")]
+        /// <summary>
+        /// Returns a list of likes on post
+        /// </summary>
+        /// <param name="postId">Id of the post to get the likes from</param>
+        /// <returns>The likes put on the posts</returns>
         public ActionResult<Like> GetPostLikes(string postId)
         {
             return Ok(_service.GetPostLikes(postId));
