@@ -13,6 +13,10 @@ namespace Epsic.Info3e.Mays.Models
         public string Id { get; set; }
         [Required]
         public DateTime Date { get; set; }
+        [Required]
+        public string PostId { get; set; }
+        [JsonIgnore]
+        public Post Post { get; set; }
         [JsonIgnore]
         public User Author { get; set; }
         [Required]
@@ -24,6 +28,7 @@ namespace Epsic.Info3e.Mays.Models
     {
         public string Id { get; set; }
         public DateTime Date { get; set; }
+        public Post Post { get; set; }
         public UserDto Author { get; set; }
         public string Content { get; set; }
         public bool IsSpoiler { get; set; }
