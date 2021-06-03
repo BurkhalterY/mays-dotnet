@@ -66,13 +66,12 @@ namespace Epsic.Info3e.Mays.Controllers
         /// </summary>
         /// <param name="id">Id of the post to update</param>
         /// <param name="post">New post data</param>
-        /// <returns>Nocontent on success, badrequest and status 500 on error, or notfound if the post does not exist</returns>
-        public async Task<IActionResult> PutPost(string id, Post post)
+        /// <returns>Nocontent on success, badrequest on different author, status 500 on error, or notfound if the post does not exist</returns>
+        public async Task<IActionResult> PutPost(Post post)
         {
             try
             {
-                // TODO: use user id
-                if (await _postService.UpdatePostAsync(id, post))
+                if (await _postService.UpdatePostAsync(getCurrentUserId(), post))
                 {
                     return NoContent();
                 }

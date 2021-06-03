@@ -60,9 +60,14 @@ namespace Epsic.Info3e.Mays.Controllers
         /// Updates a comment
         /// </summary>
         /// <param name="comment">Comment to update</param>
-        /// <returns>Badrequest if the comment does not exist, nocontent on edit, or an exception</returns>
+        /// <returns>Badrequest if the comment does not exist, nocontent on edit, forbid if different author, or an exception</returns>
         public async Task<IActionResult> PutComment(Comment comment)
         {
+            if (getCurrentUserId() != (await _context.Comments.Include(c => c.Author).FirstAsync(c => c.Id == comment.Id)).Author.Id)
+            {
+                return Forbid();
+            }
+
             if (!CommentExists(comment.Id))
             {
                 return BadRequest();
@@ -104,10 +109,16 @@ namespace Epsic.Info3e.Mays.Controllers
         /// Deletes a comment
         /// </summary>
         /// <param name="id">Id of the comment to delete</param>
-        /// <returns>Notfound if the comment does not exist, nocontent if it no longer exists</returns>
+        /// <returns>Notfound if the comment does not exist, forbid if not the author, nocontent if it no longer exists</returns>
         public async Task<IActionResult> DeleteComment(string id)
         {
-            var comment = await _context.Comments.FindAsync(id);
+            var comment = await _context.Comments.Include(c => c.Author).FirstAsync(c => c.Id == id);
+
+            if (getCurrentUserId() != comment.Author.Id)
+            {
+                return Forbid();
+            }
+
             if (comment == null)
             {
                 return NotFound();
@@ -127,6 +138,19 @@ namespace Epsic.Info3e.Mays.Controllers
         private bool CommentExists(string id)
         {
             return _context.Comments.Any(e => e.Id == id);
+        }
+
+        /// <summary>
+        /// Returns the id of the current user
+        /// </summary>
+        /// <returns>The id of the current user if exists, or null</returns>
+        private string getCurrentUserId()
+        {
+            if (User.Claims.Any(x => x.Type == "Id"))
+            {
+                return User.Claims.FirstOrDefault(x => x.Type == "Id").Value;
+            }
+            return null;
         }
     }
 }
