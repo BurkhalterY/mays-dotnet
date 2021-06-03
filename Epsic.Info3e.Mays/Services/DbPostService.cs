@@ -96,7 +96,7 @@ namespace Epsic.Info3e.Mays.Services
                 var extension = filePath.Split('.').Last();
                 var fileType = imageExtensions.Contains(extension) ? "image" :
                                videoExtensions.Contains(extension) ? "video" :
-                               audioExtensions.Contains(extension) ? "audio" : "unknow";
+                               audioExtensions.Contains(extension) ? "audio" : "unknown";
 
                 post.FilePath = filePath;
                 post.FileType = fileType;
@@ -129,7 +129,16 @@ namespace Epsic.Info3e.Mays.Services
             if (allowed)
             {
                 //todo delete likes
-                //todo delete file
+                // Make sure this is the only post using the file
+                if (!_context.Posts.Any(p => p.FileName == post.FileName && p.Id != post.Id))
+                {
+                    var filePath = $"{_environment.WebRootPath}\\Assets\\${post.FilePath}";
+                    if (File.Exists(filePath))
+                    {
+                        File.Delete(filePath);
+                    }
+                }
+
                 _context.Posts.Remove(post);
                 await _context.SaveChangesAsync();
             }
