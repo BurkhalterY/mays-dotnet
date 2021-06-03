@@ -141,6 +141,16 @@ namespace Epsic.Info3e.Mays.Services
             return true;
         }
 
+        public async Task<IEnumerable<Comment>> GetPostCommentsAsync(string postId)
+        {
+            if (!await PostExistsAsync(postId))
+            {
+                throw new NullReferenceException();
+            }
+
+            return _context.Comments.Where(c => c.PostId == postId);
+        }
+
         private async Task<bool> PostExistsAsync(string postId)
         {
             return await _context.Posts.AnyAsync(p => p.Id == postId);

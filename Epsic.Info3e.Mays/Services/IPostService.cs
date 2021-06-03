@@ -42,7 +42,15 @@ namespace Epsic.Info3e.Mays.Services
         /// </summary>
         /// <param name="postId">Id of the post to delete</param>
         /// <param name="user">User trying to delete</param>
+        /// <returns>True on successful deletion, false otherwise</returns>
         public Task<bool> DeletePostAsync(string postId, ClaimsPrincipal user);
+
+        /// <summary>
+        /// Gets the comments of a post
+        /// </summary>
+        /// <param name="postId">Id of the post to get the comments of</param>
+        /// <returns>The list of comments in the post</returns>
+        public Task<IEnumerable<Comment>> GetPostCommentsAsync(string postId);
 
         public PostDto ToPostDto(Post post, string userId)
         {

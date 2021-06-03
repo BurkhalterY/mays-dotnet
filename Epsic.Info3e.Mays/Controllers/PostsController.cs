@@ -146,6 +146,19 @@ namespace Epsic.Info3e.Mays.Controllers
             }
         }
 
+        [HttpGet("comments/{postId}")]
+        public async Task<IActionResult> GetComments(string postId)
+        {
+            try
+            {
+                return Ok(await _postService.GetPostCommentsAsync(postId));
+            }
+            catch (NullReferenceException)
+            {
+                return NotFound();
+            }
+        }
+
         /// <summary>
         /// Returns the id of the current user
         /// </summary>
