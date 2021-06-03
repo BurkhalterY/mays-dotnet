@@ -68,10 +68,7 @@ namespace Epsic.Info3e.Mays.Controllers
 
                 if (isCorrect)
                 {
-                    var roles = await _userManager.GetRolesAsync(existingUser);
-                    var claims = await _userManager.GetClaimsAsync(existingUser);
-
-                    var jwtToken = GenerateJwtToken(existingUser, roles, claims);
+                    var jwtToken = await GenerateJwtToken(existingUser);
 
                     return Ok(new AuthResponse
                     {
@@ -89,8 +86,11 @@ namespace Epsic.Info3e.Mays.Controllers
             });
         }
 
-        private string GenerateJwtToken(User user, IList<string> roles, IList<Claim> claims)
+        private async Task<string> GenerateJwtToken(User user)
         {
+            var roles = await _userManager.GetRolesAsync(user);
+            var claims = await _userManager.GetClaimsAsync(user);
+
             var jwtTokenHandler = new JwtSecurityTokenHandler();
 
             // Nous obtenons notre secret à partir des paramètres de l'application.
