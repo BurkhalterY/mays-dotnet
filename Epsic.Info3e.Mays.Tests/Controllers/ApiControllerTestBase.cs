@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using System.Net.Http.Json;
 using Epsic.Info3e.Mays.Seeders;
+using Epsic.Info3e.Mays.Models;
 
 namespace Epsic.Info3e.Mays.Tests.Controllers
 {

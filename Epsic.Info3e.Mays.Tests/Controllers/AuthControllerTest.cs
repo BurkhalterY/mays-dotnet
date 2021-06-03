@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Epsic.Info3e.Mays.Models;
-using Microsoft.AspNetCore.Identity;
 using NUnit.Framework;
 
 namespace Epsic.Info3e.Mays.Tests.Controllers
