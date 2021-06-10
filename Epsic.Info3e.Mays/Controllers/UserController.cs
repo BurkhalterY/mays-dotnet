@@ -4,10 +4,10 @@ using Epsic.Info3e.Mays.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Linq;
-using System.IO;
 using System;
 using Microsoft.AspNetCore.Hosting;
 using Epsic.Info3e.Mays.DbContext;
+using Epsic.Info3e.Mays.Services;
 
 namespace Epsic.Info3e.Mays.Controllers
 {
@@ -19,12 +19,14 @@ namespace Epsic.Info3e.Mays.Controllers
         private readonly MaysDbContext _context;
         private readonly UserManager<User> _userManager;
         private readonly IWebHostEnvironment _environment;
+        private readonly IUserService _userService;
 
-        public UserController(MaysDbContext context, UserManager<User> userManager, IWebHostEnvironment environment)
+        public UserController(MaysDbContext context, UserManager<User> userManager, IWebHostEnvironment environment, IUserService userService)
         {
             _context = context;
             _userManager = userManager;
             _environment = environment;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -34,9 +36,9 @@ namespace Epsic.Info3e.Mays.Controllers
         /// <returns>The current user</returns>
         public async Task<ActionResult<FullUserDto>> GetUser()
         {
-            var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(x => x.Type == "Id").Value);
+            var user = await _userService.GetUser(User.Claims.FirstOrDefault(x => x.Type == "Id").Value);
 
-            return new FullUserDto() { UserName = user.UserName, Email = user.Email, Avatar = user.Avatar, IsPremium = user.ExpirationDate >= DateTime.Now, ExpirationDate = user.ExpirationDate };
+            return Ok(user);
         }
 
         [HttpPut]
@@ -47,14 +49,13 @@ namespace Epsic.Info3e.Mays.Controllers
         /// <returns>Nocontent if both passwords are valid, badrequest if the new password is invalid, unauthorized if the old password is wrong</returns>
         public async Task<ActionResult> ChangePassword(ChangePassword changePassword)
         {
-            var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(x => x.Type == "Id").Value);
+            var userId = User.Claims.FirstOrDefault(x => x.Type == "Id").Value;
+            var user = await _userManager.FindByIdAsync(userId);
 
             if (await _userManager.CheckPasswordAsync(user, changePassword.OldPassword))
             {
-                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var result = await _userManager.ResetPasswordAsync(user, token, changePassword.NewPassword);
-
-                if (result.Succeeded) // If new password is valid
+                var success = await _userService.ChangePassword(changePassword, userId);
+                if (success)
                 {
                     return NoContent();
                 }
@@ -78,46 +79,15 @@ namespace Epsic.Info3e.Mays.Controllers
         /// <returns>Badrequest if the avatar's filename is bad, status 500 on error, nocontent on success</returns>
         public async Task<ActionResult> Avatar(AvatarUpload avatar)
         {
-            try
+            var id = User.Claims.FirstOrDefault(x => x.Type == "Id").Value;
+            var success = await _userService.SaveFileAsync(avatar, id);
+            if (success != null)
             {
-                if (!avatar.FileName.Contains('.'))
-                {
-                    return BadRequest();
-                }
-
-                var filePath = $"{_environment.WebRootPath}\\Avatars\\";
-                if (!Directory.Exists(filePath))
-                {
-                    Directory.CreateDirectory(filePath);
-                }
-
-                var extension = avatar.FileName.Split('.').Last();
-
-                if (!new string[] { "png", "jpg", "jpeg", "gif", "bmp", "webp" }.ToList().Contains(extension))
-                {
-                    return BadRequest();
-                }
-
-                var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(x => x.Type == "Id").Value);
-
-                // Replace image even if it's the same name because the username is unique
-
-                var fileName = user.UserName + "." + extension;
-
-                using FileStream fs = System.IO.File.Create($"{filePath}{fileName}");
-                await fs.WriteAsync(Convert.FromBase64String(avatar.FileContent));
-                fs.Flush();
-
-                user.Avatar = fileName;
-
-                _context.Users.Update(user);
-                await _context.SaveChangesAsync();
-
                 return NoContent();
             }
-            catch (Exception)
+            else
             {
-                return StatusCode(500);
+                return BadRequest();
             }
         }
     }
