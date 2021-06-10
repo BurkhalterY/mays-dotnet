@@ -36,7 +36,7 @@ namespace Epsic.Info3e.Mays.Controllers
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(x => x.Type == "Id").Value);
 
-            return new FullUserDto() { UserName = user.UserName, Email = user.Email, Avatar = user.Avatar };
+            return new FullUserDto() { UserName = user.UserName, Email = user.Email, Avatar = user.Avatar, IsPremium = user.ExpirationDate >= DateTime.Now, ExpirationDate = user.ExpirationDate };
         }
 
         [HttpPut]
