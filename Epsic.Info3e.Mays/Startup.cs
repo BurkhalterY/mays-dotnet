@@ -3,6 +3,7 @@ using System.Text;
 using Epsic.Info3e.Mays.Authorization;
 using Epsic.Info3e.Mays.Config;
 using Epsic.Info3e.Mays.DbContext;
+using Epsic.Info3e.Mays.Middlewares;
 using Epsic.Info3e.Mays.Models;
 using Epsic.Info3e.Mays.Seeders;
 using Epsic.Info3e.Mays.Services;
@@ -177,6 +178,8 @@ namespace Epsic.Info3e.Mays
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            app.UseExpirationCheck();
 
             app.UseEndpoints(endpoints =>
             {

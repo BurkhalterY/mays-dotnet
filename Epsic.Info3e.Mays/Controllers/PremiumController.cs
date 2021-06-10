@@ -63,26 +63,6 @@ namespace Epsic.Info3e.Mays.Controllers
             return Ok();
         }
 
-
-        [HttpGet]
-        [Route("CheckSubscription")]
-        public async Task<IActionResult> CheckSubscription()
-        {
-            var user = await GetUser();
-            if (user.ExpirationDate > DateTime.Now)
-            {
-                if (user.AutoRenew)
-                {
-                    user.ExpirationDate = DateTime.Now.AddMonths(1);
-                    _context.Users.Update(user);
-                    await _context.SaveChangesAsync();
-                } else {
-                    await _userManager.RemoveFromRoleAsync(user, "premium");
-                }
-            }
-            return Ok();
-        }
-
         private async Task<User> GetUser()
         {
             return await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(x => x.Type == "Id").Value);
