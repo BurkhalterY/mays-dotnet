@@ -34,7 +34,7 @@ namespace Epsic.Info3e.Mays.Controllers
         }
 
         // GET: api/Comments/post/{id}
-        [HttpGet("post/{id}")]
+        [HttpGet("post/{postId}")]
         /// <summary>
         /// Gets a list of all comments in a post
         /// </summary>
