@@ -33,6 +33,18 @@ namespace Epsic.Info3e.Mays.Controllers
             return await _context.Comments.ToListAsync();
         }
 
+        // GET: api/Comments/post/{id}
+        [HttpGet("post/{id}")]
+        /// <summary>
+        /// Gets a list of all comments in a post
+        /// </summary>
+        /// <param name="postId">Id of the post to get the comments of</param>
+        /// <returns>A list of all comments in the post</returns>
+        public async Task<ActionResult<IEnumerable<Comment>>> GetPostComments(string postId)
+        {
+            return await _context.Comments.Where(c => c.PostId == postId).ToListAsync();
+        }
+
         // GET: api/Comments/5
         [HttpGet("{id}")]
         /// <summary>
