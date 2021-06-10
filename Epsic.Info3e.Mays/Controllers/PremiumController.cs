@@ -23,6 +23,8 @@ namespace Epsic.Info3e.Mays.Controllers
             _userManager = userManager;
         }
 
+        [HttpPost]
+        [Route("Subscribe")]
         public async Task<IActionResult> Subscribe(CreditCard creditCard)
         {
             if (true) // accept any card for the moment
@@ -50,6 +52,8 @@ namespace Epsic.Info3e.Mays.Controllers
             }
         }
 
+        [HttpDelete]
+        [Route("CancelSubscription")]
         public async Task<IActionResult> CancelSubscription()
         {
             var user = await GetUser();
@@ -59,6 +63,9 @@ namespace Epsic.Info3e.Mays.Controllers
             return Ok();
         }
 
+
+        [HttpGet]
+        [Route("CheckSubscription")]
         public async Task<IActionResult> CheckSubscription()
         {
             var user = await GetUser();
