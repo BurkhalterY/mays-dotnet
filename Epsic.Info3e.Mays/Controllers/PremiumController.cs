@@ -1,6 +1,9 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Epsic.Info3e.Mays.DbContext;
 using Epsic.Info3e.Mays.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,78 +11,74 @@ namespace Epsic.Info3e.Mays.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "user,premium,admin")]
     public class PremiumController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
+        private readonly MaysDbContext _context;
 
-        public PremiumController(UserManager<User> userManager)
+        public PremiumController(UserManager<User> userManager, MaysDbContext context)
         {
+            _context = context;
             _userManager = userManager;
         }
 
-        [HttpPost("Enable/{userId}")]
-        /// <summary>
-        /// Makes an user premium
-        /// </summary>
-        /// <param name="userId">Id of the user to premium, defaults to the current user if none is selected, or the user is neither premium nor admin</param>
-        /// <returns>Badrequest if the target user is already premium, or ok</returns>
-        public async Task<IActionResult> Enable(string userId = null)
+        public async Task<IActionResult> Subscribe(CreditCard creditCard)
         {
-            if (!User.IsInRole("admin"))
+            if (true) // accept any card for the moment
             {
-                if (!User.IsInRole("premium"))
+                var user = await GetUser();
+                user.ExpirationDate = DateTime.Now.AddMonths(1);
+                user.AutoRenew = creditCard.AutoRenew;
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+
+                await _userManager.AddToRoleAsync(user, "premium");
+
+                return Ok(new PaymentResponse
                 {
-                    // Free users can only premium themselves
-                    userId ??= User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
-                }
-
-                //TODO Check for credit card
+                    Result = true
+                });
             }
-
-            var user = await _userManager.FindByIdAsync(userId);
-            var roles = await _userManager.GetRolesAsync(user);
-
-            if (roles.Any(r => string.Equals(r, "premium", System.StringComparison.OrdinalIgnoreCase)))
+            else
             {
-                return BadRequest();
+                return BadRequest(new PaymentResponse
+                {
+                    Result = false,
+                    Message = "Invalid card"
+                });
             }
+        }
 
-            await _userManager.AddToRoleAsync(user, "premium");
-
+        public async Task<IActionResult> CancelSubscription()
+        {
+            var user = await GetUser();
+            user.AutoRenew = false;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
             return Ok();
         }
 
-        [HttpPost("Disable/{userId}")]
-        /// <summary>
-        /// Removes an user from premium
-        /// </summary>
-        /// <param name="userId">Id of the user to premium, defaults to the current user if they are not admin</param>
-        /// <returns>Forbid if the current user is neither admin nor premium, badrequest if the target user is not premium, ok otherwise</returns>
-        public async Task<IActionResult> Disable(string userId = null)
+        public async Task<IActionResult> CheckSubscription()
         {
-            if (!User.IsInRole("admin"))
+            var user = await GetUser();
+            if (user.ExpirationDate > DateTime.Now)
             {
-                if (User.IsInRole("premium"))
+                if (user.AutoRenew)
                 {
-                    userId = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
-                }
-                else
-                {
-                    return Forbid();
+                    user.ExpirationDate = DateTime.Now.AddMonths(1);
+                    _context.Users.Update(user);
+                    await _context.SaveChangesAsync();
+                } else {
+                    await _userManager.RemoveFromRoleAsync(user, "premium");
                 }
             }
-
-            var user = await _userManager.FindByIdAsync(userId);
-            var roles = await _userManager.GetRolesAsync(user);
-
-            if (!roles.Any(r => string.Equals(r, "premium", System.StringComparison.OrdinalIgnoreCase)))
-            {
-                return BadRequest();
-            }
-
-            await _userManager.RemoveFromRoleAsync(user, "premium");
-
             return Ok();
+        }
+
+        private async Task<User> GetUser()
+        {
+            return await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(x => x.Type == "Id").Value);
         }
     }
 }

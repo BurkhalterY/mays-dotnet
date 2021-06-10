@@ -3,14 +3,16 @@ using System;
 using Epsic.Info3e.Mays.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Epsic.Info3e.Mays.Migrations
 {
     [DbContext(typeof(MaysDbContext))]
-    partial class MaysDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210610064042_AddExpirationDate")]
+    partial class AddExpirationDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -306,9 +308,6 @@ namespace Epsic.Info3e.Mays.Migrations
             modelBuilder.Entity("Epsic.Info3e.Mays.Models.User", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.Property<bool>("AutoRenew")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Avatar")
                         .HasColumnType("TEXT");

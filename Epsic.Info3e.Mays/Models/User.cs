@@ -1,10 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System;
+using System.Text.Json.Serialization;
 
 namespace Epsic.Info3e.Mays.Models
 {
     public class User : IdentityUser
     {
         public string Avatar { get; set; }
+        [JsonIgnore]
+        public DateTime ExpirationDate { get; set; }
+        [JsonIgnore]
+        public bool AutoRenew { get; set; }
     }
 
     public class UserDto
