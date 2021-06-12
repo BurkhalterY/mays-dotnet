@@ -31,9 +31,10 @@ namespace Epsic.Info3e.Mays.Controllers
         /// Gets a list of all comments
         /// </summary>
         /// <returns>A list of all comments</returns>
-        public async Task<ActionResult<IEnumerable<Comment>>> GetComments()
+        public async Task<ActionResult<IEnumerable<CommentDto>>> GetComments()
         {
-            return await _context.Comments.ToListAsync();
+            var comments = await _context.Comments.Include(c => c.Post).Include(c => c.Author).ToListAsync();
+            return comments.Select(c => ToCommentDto(c)).ToList();
         }
 
         // GET: api/Comments/post/{id}
@@ -43,9 +44,10 @@ namespace Epsic.Info3e.Mays.Controllers
         /// </summary>
         /// <param name="postId">Id of the post to get the comments of</param>
         /// <returns>A list of all comments in the post</returns>
-        public async Task<ActionResult<IEnumerable<Comment>>> GetPostComments(string postId)
+        public async Task<ActionResult<IEnumerable<CommentDto>>> GetPostComments(string postId)
         {
-            return await _context.Comments.Where(c => c.PostId == postId).ToListAsync();
+            var comments = await _context.Comments.Where(c => c.PostId == postId).Include(c => c.Post).Include(c => c.Author).ToListAsync();
+            return comments.Select(c => ToCommentDto(c)).ToList();
         }
 
         // GET: api/Comments/5
@@ -55,16 +57,16 @@ namespace Epsic.Info3e.Mays.Controllers
         /// </summary>
         /// <param name="id">Id of the comment to get</param>
         /// <returns>The comment, or a notfound</returns>
-        public async Task<ActionResult<Comment>> GetComment(string id)
+        public async Task<ActionResult<CommentDto>> GetComment(string id)
         {
-            var comment = await _context.Comments.FindAsync(id);
+            var comment = await _context.Comments.Include(c => c.Post).Include(c => c.Author).FirstAsync(c => c.Id == id);
 
             if (comment == null)
             {
                 return NotFound();
             }
 
-            return comment;
+            return ToCommentDto(comment);
         }
 
         // PUT: api/Comments/5
@@ -169,6 +171,31 @@ namespace Epsic.Info3e.Mays.Controllers
                 return User.Claims.FirstOrDefault(x => x.Type == "Id").Value;
             }
             return null;
+        }
+
+        private CommentDto ToCommentDto(Comment comment)
+        {
+            return new CommentDto
+            {
+                Id = comment.Id,
+                Date = comment.Date,
+                Post = new PostDto
+                {
+                    Id = comment?.Post?.Id,
+                    Title = comment?.Post?.Title,
+                    Date = comment.Post.Date,
+                    Content = comment?.Post?.Content,
+                    FilePath = comment?.Post?.FilePath,
+                    FileType = comment?.Post?.FileType,
+                    IsSpoiler = comment.Post.IsSpoiler
+                },
+                Author = new UserDto {
+                    UserName = comment?.Author?.UserName,
+                    Avatar = comment?.Author?.Avatar
+                },
+                Content = comment.Content,
+                IsSpoiler = comment.IsSpoiler
+            };
         }
     }
 }

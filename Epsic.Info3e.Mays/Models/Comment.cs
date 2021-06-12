@@ -28,7 +28,7 @@ namespace Epsic.Info3e.Mays.Models
     {
         public string Id { get; set; }
         public DateTime Date { get; set; }
-        public Post Post { get; set; }
+        public PostDto Post { get; set; }
         public UserDto Author { get; set; }
         public string Content { get; set; }
         public bool IsSpoiler { get; set; }
