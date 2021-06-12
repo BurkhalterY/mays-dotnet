@@ -58,7 +58,7 @@ namespace Epsic.Info3e.Mays.Services
                     Directory.CreateDirectory(filePath);
                 }
 
-                var extension = avatar.FileName.Split('.').Last();
+                var extension = avatar.FileName.Split('.').Last().ToLower();
 
                 if (!new string[] { "png", "jpg", "jpeg", "gif", "bmp", "webp" }.ToList().Contains(extension))
                 {

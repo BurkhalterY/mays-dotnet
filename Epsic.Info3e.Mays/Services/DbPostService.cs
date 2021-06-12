@@ -181,7 +181,7 @@ namespace Epsic.Info3e.Mays.Services
                     Directory.CreateDirectory(filePath);
                 }
 
-                var extension = fileName.Split('.').Last();
+                var extension = fileName.Split('.').Last().ToLower();
                 var allowed = (await _authorizationService.AuthorizeAsync(user, extension, "Extension")).Succeeded;
 
                 if (!allowed)
