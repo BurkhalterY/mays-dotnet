@@ -64,6 +64,7 @@ namespace Epsic.Info3e.Mays.Services
                 FileType = post.FileType,
                 IsSpoiler = post.IsSpoiler,
                 CountLikes = post.Likes.Count,
+                CountComment = post.Comments.Count,
                 IsLiked = post.Likes.Any(l => l.UserId == userId),
             };
         }

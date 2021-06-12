@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Epsic.Info3e.Mays.DbContext;
 using Epsic.Info3e.Mays.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Epsic.Info3e.Mays.Controllers
 {
@@ -16,10 +17,12 @@ namespace Epsic.Info3e.Mays.Controllers
     public class CommentsController : ControllerBase
     {
         private readonly MaysDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public CommentsController(MaysDbContext context)
+        public CommentsController(MaysDbContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: api/Comments
@@ -102,6 +105,7 @@ namespace Epsic.Info3e.Mays.Controllers
         // POST: api/Comments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = "user,premium,admin")]
         /// <summary>
         /// Adds a comment
         /// </summary>
@@ -109,6 +113,8 @@ namespace Epsic.Info3e.Mays.Controllers
         /// <returns>Createdataction on success</returns>
         public async Task<ActionResult<Comment>> PostComment(Comment comment)
         {
+            comment.Author = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(x => x.Type == "Id").Value);
+            comment.Date = DateTime.Now;
             _context.Comments.Add(comment);
             await _context.SaveChangesAsync();
 

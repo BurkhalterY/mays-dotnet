@@ -37,6 +37,7 @@ namespace Epsic.Info3e.Mays.Services
             return await _context.Posts
                 .Include(p => p.Author)
                 .Include(p => p.Likes)
+                .Include(p => p.Comments)
                 .OrderByDescending(p => p.Date)
                 .ToListAsync();
         }
@@ -45,7 +46,7 @@ namespace Epsic.Info3e.Mays.Services
         {
             if (_context.Posts.Any(p => p.Id == postId))
             {
-                return await _context.Posts.Include(p => p.Author).Include(p => p.Likes).FirstAsync(p => p.Id == postId);
+                return await _context.Posts.Include(p => p.Author).Include(p => p.Likes).Include(p => p.Comments).FirstAsync(p => p.Id == postId);
             }
 
             return null;

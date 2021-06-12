@@ -30,6 +30,8 @@ namespace Epsic.Info3e.Mays.Models
         public bool IsSpoiler { get; set; }
         [JsonIgnore]
         public IList<Like> Likes { get; set; }
+        [JsonIgnore]
+        public IList<Comment> Comments { get; set; }
     }
 
     public class PostDto
@@ -43,6 +45,7 @@ namespace Epsic.Info3e.Mays.Models
         public string FileType { get; set; }
         public bool IsSpoiler { get; set; }
         public int CountLikes { get; set; }
+        public int CountComment { get; set; }
         public bool IsLiked { get; set; }
     }
 }
