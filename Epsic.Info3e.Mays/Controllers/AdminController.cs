@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -82,6 +84,24 @@ namespace Epsic.Info3e.Mays.Controllers
             await _userManager.RemoveFromRoleAsync(user, "premium");
 
             return Ok();
+        }
+
+        [HttpPost("Users")]
+        public async Task<ActionResult<IEnumerable<FullUserDto>>> Users()
+        {
+            return Ok(_userManager.Users.Select(user => ToUserDto(user)).ToList());
+        }
+
+        private static FullUserDto ToUserDto(User user)
+        {
+            return new FullUserDto()
+            {
+                UserName = user.UserName,
+                Email = user.Email,
+                Avatar = user.Avatar,
+                IsPremium = user.ExpirationDate >= DateTime.Now,
+                ExpirationDate = user.ExpirationDate
+            };
         }
     }
 }
