@@ -127,6 +127,7 @@ namespace Epsic.Info3e.Mays
             services.AddTransient<ILikeService, DbLikeService>();
             services.AddTransient<IPremiumService, DbPremiumService>();
             services.AddTransient<IAuthService, DbAuthService>();
+            services.AddTransient<IUserService, DbUserService>();
             services.AddSingleton<IAuthorizationHandler, ExtensionAuthorizationHandler>();
         }
 

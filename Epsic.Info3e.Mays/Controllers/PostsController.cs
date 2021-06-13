@@ -61,6 +61,7 @@ namespace Epsic.Info3e.Mays.Controllers
         // PUT: api/Posts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize(Roles = "user,premium,admin")]
         /// <summary>
         /// Updates a post
         /// </summary>
