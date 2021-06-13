@@ -150,16 +150,15 @@ namespace Epsic.Info3e.Mays.Services
                 throw new NullReferenceException();
             }
 
-            var post = await _context.Posts.FindAsync(postId);
+            var post = await _context.Posts.Include(p => p.Author).FirstAsync(p => p.Id == postId);
 
-            var allowed = (await _authorizationService.AuthorizeAsync(user, "Admin")).Succeeded ||
-                (await _authorizationService.AuthorizeAsync(user, "SameUserPost")).Succeeded;
+            var allowed = post.Author.Id == user.FindFirstValue("Id") || (await _authorizationService.AuthorizeAsync(user, "Admin")).Succeeded;
 
             if (allowed)
             {
                 //todo delete likes
                 // Make sure this is the only post using the file
-                if (!_context.Posts.Any(p => p.FileName == post.FileName && p.Id != post.Id))
+                if (!_context.Posts.Any(p => p.FilePath == post.FilePath && p.Id != post.Id))
                 {
                     var filePath = $"{_environment.WebRootPath}\\Assets\\${post.FilePath}";
                     if (File.Exists(filePath))
