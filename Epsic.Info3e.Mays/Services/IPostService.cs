@@ -24,10 +24,10 @@ namespace Epsic.Info3e.Mays.Services
         /// <summary>
         /// Updates a post's data
         /// </summary>
-        /// <param name="userId">Id of the user trying to update</param>
         /// <param name="post">Post to update</param>
+        /// <param name="user">User trying to update, required for saving the file</param>
         /// <returns>True if the post is updated, false otherwise</returns>
-        public Task<bool> UpdatePostAsync(string userId, Post post);
+        public Task<bool> UpdatePostAsync(Post post, ClaimsPrincipal user);
 
         /// <summary>
         /// Adds a post

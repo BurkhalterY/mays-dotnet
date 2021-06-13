@@ -73,7 +73,7 @@ namespace Epsic.Info3e.Mays.Controllers
 
             try
             {
-                if (await _postService.UpdatePostAsync(getCurrentUserId(), post))
+                if (await _postService.UpdatePostAsync(post, User))
                 {
                     return NoContent();
                 }

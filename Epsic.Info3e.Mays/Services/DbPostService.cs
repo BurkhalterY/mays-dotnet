@@ -52,8 +52,10 @@ namespace Epsic.Info3e.Mays.Services
             return null;
         }
 
-        public async Task<bool> UpdatePostAsync(string userId, Post post)
+        public async Task<bool> UpdatePostAsync(Post post, ClaimsPrincipal user)
         {
+            var userId = user.Claims.FirstOrDefault(x => x.Type == "Id").Value;
+
             if (userId != (await GetPostAsync(post.Id)).Author.Id)
             {
                 return false;
@@ -66,10 +68,29 @@ namespace Epsic.Info3e.Mays.Services
                 throw new NullReferenceException();
             }
 
+            if (post.FileContent != null)
+            {
+                var filePath = await SaveFileAsync(post.FileContent, post.FileName, user);
+                if (filePath == null)
+                {
+                    return false;
+                }
+
+                var imageExtensions = new string[] { "png", "jpg", "jpeg", "gif", "bmp", "webp" }.ToList();
+                var videoExtensions = new string[] { "mp4", "webm" }.ToList();
+                var audioExtensions = new string[] { "mp3", "wav" }.ToList();
+
+                var extension = filePath.Split('.').Last();
+                var fileType = imageExtensions.Contains(extension) ? "image" :
+                               videoExtensions.Contains(extension) ? "video" :
+                               audioExtensions.Contains(extension) ? "audio" : "unknown";
+
+                old.FilePath = filePath;
+                old.FileType = fileType;
+            }
+
             old.Title = post.Title;
             old.Content = post.Content;
-            old.FileContent = post.FileContent;
-            old.FileName = post.FileName;
             old.IsSpoiler = post.IsSpoiler;
 
             _context.Posts.Update(old);
