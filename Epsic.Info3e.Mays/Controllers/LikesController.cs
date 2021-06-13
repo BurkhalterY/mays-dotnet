@@ -22,7 +22,7 @@ namespace Epsic.Info3e.Mays.Controllers
 
         // POST: api/Likes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost("{postId}")]
         [Authorize(Roles = "user,premium,admin")]
         /// <summary>
         /// Adds a like to a post from the user
