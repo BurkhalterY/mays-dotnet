@@ -59,7 +59,21 @@ namespace Epsic.Info3e.Mays.Services
                 return false;
             }
 
-            _context.Entry(post).State = EntityState.Modified;
+            var old = await _context.Posts.FirstAsync(p => p.Id == post.Id);
+
+            if (old == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            old.Title = post.Title;
+            old.Content = post.Content;
+            old.FileContent = post.FileContent;
+            old.FileName = post.FileName;
+            old.IsSpoiler = post.IsSpoiler;
+
+            _context.Posts.Update(old);
+            await _context.SaveChangesAsync();
 
             try
             {
@@ -67,14 +81,7 @@ namespace Epsic.Info3e.Mays.Services
             }
             catch(DbUpdateConcurrencyException)
             {
-                if (!await PostExistsAsync(post.Id))
-                {
-                    throw new NullReferenceException();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return true;
