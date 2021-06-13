@@ -24,6 +24,15 @@ namespace Epsic.Info3e.Mays.Models
         public bool IsSpoiler { get; set; }
     }
 
+    public class CommentUpdate
+    {
+        [JsonIgnore]
+        public string Id { get; set; }
+        [Required]
+        public string Content { get; set; }
+        public bool IsSpoiler { get; set; }
+    }
+
     public class CommentDto
     {
         public string Id { get; set; }

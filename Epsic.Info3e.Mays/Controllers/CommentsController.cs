@@ -71,26 +71,29 @@ namespace Epsic.Info3e.Mays.Controllers
 
         // PUT: api/Comments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut]
+        [HttpPut("{id}")]
         [Authorize(Roles = "user,premium,admin")]
         /// <summary>
         /// Updates a comment
         /// </summary>
         /// <param name="comment">Comment to update</param>
         /// <returns>Badrequest if the comment does not exist, nocontent on edit, forbid if different author, or an exception</returns>
-        public async Task<IActionResult> PutComment(Comment comment)
+        public async Task<IActionResult> PutComment(string id, CommentUpdate comment)
         {
-            if (getCurrentUserId() != (await _context.Comments.Include(c => c.Author).FirstAsync(c => c.Id == comment.Id)).Author.Id)
-            {
-                return Forbid();
-            }
-
+            comment.Id = id;
             if (!CommentExists(comment.Id))
             {
                 return BadRequest();
             }
+            var originalComment = await _context.Comments.Include(c => c.Author).FirstAsync(c => c.Id == comment.Id);
+            if (getCurrentUserId() != originalComment.Author.Id)
+            {
+                return Forbid();
+            }
 
-            _context.Entry(comment).State = EntityState.Modified;
+            originalComment.Content = comment.Content;
+            originalComment.IsSpoiler = comment.IsSpoiler;
+            _context.Entry(originalComment).State = EntityState.Modified;
 
             try
             {
