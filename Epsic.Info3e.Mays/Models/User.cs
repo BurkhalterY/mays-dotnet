@@ -27,4 +27,14 @@ namespace Epsic.Info3e.Mays.Models
         public bool IsPremium { get; set; }
         public DateTime ExpirationDate { get; set; }
     }
+
+    public class AdminUserDto
+    {
+        public string Id { get; set; }
+        public string UserName { get; set; }
+        public string Email { get; set; }
+        public string Avatar { get; set; }
+        public bool IsPremium { get; set; }
+        public DateTime ExpirationDate { get; set; }
+    }
 }

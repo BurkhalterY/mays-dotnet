@@ -87,15 +87,16 @@ namespace Epsic.Info3e.Mays.Controllers
         }
 
         [HttpGet("Users")]
-        public async Task<ActionResult<IEnumerable<FullUserDto>>> Users()
+        public async Task<ActionResult<IEnumerable<AdminUserDto>>> Users()
         {
             return Ok(_userManager.Users.Select(user => ToUserDto(user)).ToList());
         }
 
-        private static FullUserDto ToUserDto(User user)
+        private static AdminUserDto ToUserDto(User user)
         {
-            return new FullUserDto()
+            return new AdminUserDto()
             {
+                Id = user.Id,
                 UserName = user.UserName,
                 Email = user.Email,
                 Avatar = user.Avatar,
