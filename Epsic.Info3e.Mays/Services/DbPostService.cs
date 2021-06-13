@@ -152,7 +152,7 @@ namespace Epsic.Info3e.Mays.Services
 
             var post = await _context.Posts.Include(p => p.Author).FirstAsync(p => p.Id == postId);
 
-            var allowed = post.Author.Id == user.FindFirstValue("Id") || (await _authorizationService.AuthorizeAsync(user, "Admin")).Succeeded;
+            var allowed = post.Author.Id == user.FindFirstValue("Id") || user.IsInRole("admin"); //todo: use authorization
 
             if (allowed)
             {
