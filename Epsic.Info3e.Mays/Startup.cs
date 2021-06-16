@@ -149,13 +149,13 @@ namespace Epsic.Info3e.Mays
 
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
-                var context = serviceScope.ServiceProvider.GetRequiredService<MaysDbContext>();
-                context.Database.Migrate();
-
-                var services = serviceScope.ServiceProvider;
-
                 try
                 {
+                    var context = serviceScope.ServiceProvider.GetRequiredService<MaysDbContext>();
+                    context.Database.Migrate();
+
+                    var services = serviceScope.ServiceProvider;
+
                     var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                     var userManager = services.GetRequiredService<UserManager<User>>();
 
