@@ -17,6 +17,7 @@ namespace Epsic.Info3e.Mays.Models
     {
         public string UserName { get; set; }
         public string Avatar { get; set; }
+        public bool IsPremium { get; set; }
     }
 
     public class FullUserDto
