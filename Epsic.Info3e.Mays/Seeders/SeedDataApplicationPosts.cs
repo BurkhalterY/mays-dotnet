@@ -25,6 +25,12 @@ namespace Epsic.Info3e.Mays.Seeders
                     AuthorName = "admin",
                     Content = "On a un nouveau site",
                 },
+                new FakePost {
+                    Title = "Cash",
+                    AuthorName = "JefMesos",
+                    FileName = "cash.png",
+                    FileType = "image",
+                },
             };
 
             foreach (var post in posts)
