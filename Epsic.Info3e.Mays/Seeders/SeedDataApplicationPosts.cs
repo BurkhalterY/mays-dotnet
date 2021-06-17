@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Epsic.Info3e.Mays.DbContext;
@@ -44,6 +45,7 @@ namespace Epsic.Info3e.Mays.Seeders
                 var realPost = new Post {
                     Title = post.Title,
                     Author = author,
+                    Date = DateTime.Now,
                 };
                 var valid = false;
 
