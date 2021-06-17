@@ -7,12 +7,20 @@ namespace Epsic.Info3e.Mays.Seeders
     {
         public static void SeedImages(IWebHostEnvironment environment)
         {
-            var seedDirectory = $"{environment.WebRootPath}\\AssetsSeeds\\";
-            var targetDirectory = $"{environment.WebRootPath}\\Assets\\";
-            // Can't seed
-            if (!Directory.Exists(seedDirectory) || Directory.Exists(targetDirectory)) return;
+            var postSeedDirectory = $"{environment.WebRootPath}\\AssetsSeeds\\";
+            var postTargetDirectory = $"{environment.WebRootPath}\\Assets\\";
+            var avatarSeedDirectory = $"{environment.WebRootPath}\\AvatarsSeeds\\";
+            var avatarTargetDirectory = $"{environment.WebRootPath}\\Avatars\\";
 
-            Directory.Move(seedDirectory, targetDirectory);
+            if (Directory.Exists(postSeedDirectory) && !Directory.Exists(postTargetDirectory))
+            {
+                Directory.Move(postSeedDirectory, postTargetDirectory);
+            }
+
+            if (Directory.Exists(avatarSeedDirectory) && !Directory.Exists(avatarTargetDirectory))
+            {
+                Directory.Move(avatarSeedDirectory, avatarTargetDirectory);
+            }
         }
     }
 }
