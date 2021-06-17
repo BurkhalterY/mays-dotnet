@@ -86,7 +86,8 @@ namespace Epsic.Info3e.Mays.Services
                 {
                     new Claim("Id", user.Id),
                     new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                    new Claim("Username", user.UserName)
+                    new Claim("Username", user.UserName),
+                    new Claim("Avatar", user.Avatar),
                 }),
                 Claims = new Dictionary<string, object>(),
                 Expires = DateTime.UtcNow.AddDays(1),
