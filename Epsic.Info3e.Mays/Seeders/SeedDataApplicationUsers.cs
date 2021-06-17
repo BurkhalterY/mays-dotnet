@@ -51,6 +51,7 @@ namespace Epsic.Info3e.Mays.Seeders
                     var newAdmin = new User {
                         Email = admin.Email,
                         UserName = admin.Username,
+                        Avatar = admin.Avatar,
                     };
 
                     userManager.CreateAsync(newAdmin, admin.Password);
@@ -67,6 +68,7 @@ namespace Epsic.Info3e.Mays.Seeders
                     var newAdmin = new User {
                         Email = premium.Email,
                         UserName = premium.Username,
+                        Avatar = premium.Avatar,
                     };
 
                     userManager.CreateAsync(newAdmin, premium.Password);
@@ -83,6 +85,7 @@ namespace Epsic.Info3e.Mays.Seeders
                     var newAdmin = new User {
                         Email = user.Email,
                         UserName = user.Username,
+                        Avatar = user.Avatar,
                     };
 
                     userManager.CreateAsync(newAdmin, user.Password);
