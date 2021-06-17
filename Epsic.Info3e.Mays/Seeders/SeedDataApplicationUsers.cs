@@ -22,6 +22,7 @@ namespace Epsic.Info3e.Mays.Seeders
                     Username = "admin",
                     Email = "admin@mays.ch",
                     Password = "Adm1n2345+",
+                    Avatar = "admin.png",
                 },
             };
             var premiums = new FakeUser[] {
@@ -29,6 +30,7 @@ namespace Epsic.Info3e.Mays.Seeders
                     Username = "JefMesos",
                     Email = "jeff@elmesos.mx",
                     Password = "4Rg#ent$",
+                    Avatar = "cash.png",
                 },
             };
             var users = new FakeUser[] {
@@ -36,6 +38,7 @@ namespace Epsic.Info3e.Mays.Seeders
                     Username = "bobMichel",
                     Email = "bob.michel@gode.ch",
                     Password = "#Ard4nal",
+                    Avatar = "michel.png",
                 },
             };
 
