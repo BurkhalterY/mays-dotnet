@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Epsic.Info3e.Mays.DbContext;
 using Epsic.Info3e.Mays.Models;
@@ -35,6 +36,8 @@ namespace Epsic.Info3e.Mays.Seeders
 
             foreach (var post in posts)
             {
+                if (context.Posts.Any(p => p.Title == post.Title)) continue;
+
                 var author = await userManager.FindByNameAsync(post.AuthorName);
                 if (author == null) continue;
 
@@ -51,7 +54,7 @@ namespace Epsic.Info3e.Mays.Seeders
                 }
                 if (post.FileName != null && post.FileType != null)
                 {
-                    realPost.FileName = post.FileName;
+                    realPost.FilePath = post.FileName;
                     realPost.FileType = post.FileType;
                     valid = true;
                 }
