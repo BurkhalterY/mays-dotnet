@@ -33,6 +33,12 @@ namespace Epsic.Info3e.Mays.Seeders
                     FileName = "cash.png",
                     FileType = "image",
                 },
+                new FakePost {
+                    Title = "Money",
+                    AuthorName = "JefMesos",
+                    FileName = "Savior-of-a-Lot-of-Money.mp3",
+                    FileType = "audio",
+                },
             };
 
             foreach (var post in posts)
