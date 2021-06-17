@@ -10,7 +10,7 @@ namespace Epsic.Info3e.Mays.Seeders
             var seedDirectory = $"{environment.WebRootPath}\\AssetsSeeds\\";
             var targetDirectory = $"{environment.WebRootPath}\\Assets\\";
             // Can't seed
-            if (!Directory.Exists(seedDirectory)) return;
+            if (!Directory.Exists(seedDirectory) || Directory.Exists(targetDirectory)) return;
 
             Directory.Move(seedDirectory, targetDirectory);
         }
