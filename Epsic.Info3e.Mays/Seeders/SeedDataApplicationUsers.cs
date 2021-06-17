@@ -22,7 +22,7 @@ namespace Epsic.Info3e.Mays.Seeders
                     Username = "admin",
                     Email = "admin@mays.ch",
                     Password = "Adm1n2345+",
-                    Avatar = "admin.png",
+                    Avatar = "admin.jpg",
                 },
             };
             var premiums = new FakeUser[] {
