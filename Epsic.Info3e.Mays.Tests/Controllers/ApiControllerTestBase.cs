@@ -104,7 +104,7 @@ namespace Epsic.Info3e.Mays.Tests.Controllers
     public class ApiControllerTestBase : CustomWebApplicationFactory<Startup>
     {
         private CustomWebApplicationFactory<Startup> _factory;
-        private HttpClient _client;
+        protected HttpClient _client;
 
         [SetUp]
         public void SetupTest()
