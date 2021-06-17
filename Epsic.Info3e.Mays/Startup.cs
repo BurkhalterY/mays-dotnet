@@ -163,6 +163,7 @@ namespace Epsic.Info3e.Mays
                     SeedDataApplicationUsers.SeedUsers(userManager);
                     // Ugh
                     SeedDataApplicationPosts.SeedPostsAsync(userManager, context).GetAwaiter().GetResult();
+                    SeedDataApplicationImages.SeedImages(env);
                 }
                 catch (Exception ex)
                 {
