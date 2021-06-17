@@ -28,14 +28,14 @@ namespace Epsic.Info3e.Mays.Seeders
                 new FakeUser {
                     Username = "JefMesos",
                     Email = "jeff@elmesos.mx",
-                    Password = "4rg#ent$",
+                    Password = "4Rg#ent$",
                 },
             };
             var users = new FakeUser[] {
                 new FakeUser {
                     Username = "bobMichel",
                     Email = "bob.michel@gode.ch",
-                    Password = "#ard4nal",
+                    Password = "#Ard4nal",
                 },
             };
 
