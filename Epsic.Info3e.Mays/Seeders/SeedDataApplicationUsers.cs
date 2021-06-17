@@ -12,6 +12,7 @@ namespace Epsic.Info3e.Mays.Seeders
             public string Username { get; set; }
             public string Email { get; set; }
             public string Password { get; set; }
+            public string Avatar { get; set; } = null;
         }
 
         public static void SeedUsers(UserManager<User> userManager)

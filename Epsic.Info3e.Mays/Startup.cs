@@ -161,6 +161,8 @@ namespace Epsic.Info3e.Mays
 
                     SeedDataApplicationRoles.SeedRoles(rolesManager);
                     SeedDataApplicationUsers.SeedUsers(userManager);
+                    // Ugh
+                    SeedDataApplicationPosts.SeedPostsAsync(userManager, context).GetAwaiter().GetResult();
                 }
                 catch (Exception ex)
                 {
