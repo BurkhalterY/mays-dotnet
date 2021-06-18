@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Epsic.Info3e.Mays.Models;
 using Microsoft.AspNetCore.Identity;
 
@@ -72,6 +73,7 @@ namespace Epsic.Info3e.Mays.Seeders
                         Email = premium.Email,
                         UserName = premium.Username,
                         Avatar = premium.Avatar,
+                        ExpirationDate = DateTime.Now.AddMonths(1),
                     };
 
                     userManager.CreateAsync(newAdmin, premium.Password);
